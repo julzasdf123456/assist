@@ -1,0 +1,2 @@
+* INFYOM GENERATOR
+php artisan infyom:scaffold $MODEL_NAME --fromTable --tableName=$TABLE_NAME --connection=connectionName
