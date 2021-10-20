@@ -48,4 +48,72 @@ class BillsController extends Controller
         }
     }
 
+    /**
+     * @Params
+     * q = Bill Number
+     */
+    public function getBillDetails(Request $request) {
+        $bill = DB::connection('sqlsrv2')
+                    ->table('Bills')
+                    ->where('Bills.BillNumber', $request['q'])
+                    ->select('Bills.ServicePeriodEnd',
+                            'Bills.AccountNumber',
+                            'Bills.BillNumber',
+                            'Bills.ConsumerType',
+                            'Bills.NetAmount',
+                            'Bills.DueDate',
+                            'Bills.ServiceDateFrom',
+                            'Bills.ServiceDateTo',
+                            'Bills.GenerationSystemAmt',
+                            'Bills.TransmissionSystemAmt',
+                            'Bills.SystemLossAmt',
+                            'Bills.DistributionSystemAmt',
+                            'Bills.DistributionDemandAmt',
+                            'Bills.SupplySystemAmt as RetailElectricServiceAmount',
+                            'Bills.SupplyRetailCustomerAmt as RetailElectricServiceAmountKW',
+                            'Bills.MeteringSystemAmt',
+                            'Bills.MeteringRetailCustomerAmt',)
+                    ->first();
+
+        if ($bill == null) {
+            return response()->json(['error' => 'No bill found'], 404);
+        } else {
+            $billsExtension = DB::connection('sqlsrv2')
+                    ->table('BillsExtension')
+                    ->where('AccountNumber', $bill->AccountNumber)
+                    ->where('ServicePeriodEnd', $bill->ServicePeriodEnd)
+                    ->select('BillsExtension.Item18 as OtherGenerationAdj',
+                        'BillsExtension.Item19 as OtherTransmissionAdj',
+                        'BillsExtension.Item20 as OtherSystemLossAdj',)
+                    ->first();
+
+            $rates = DB::connection('sqlsrv2')
+                    ->table('UnbundledRates')
+                    ->where('ConsumerType', $bill->ConsumerType)
+                    ->where('ServicePeriodEnd', $bill->ServicePeriodEnd)
+                    ->select('UnbundledRates.GenerationSystemCharge',
+                        'UnbundledRates.TransmissionSystemCharge',
+                        'UnbundledRates.SystemLossCharge',
+                        'UnbundledRates.DistributionSystemCharge',
+                        'UnbundledRates.DistributionDemandCharge',
+                        'UnbundledRates.SupplySystemCharge as RetailElectricServiceRate',
+                        'UnbundledRates.SupplyRetailCustomerCharge as RetailElectricServiceRateKW',
+                        'UnbundledRates.MeteringSystemCharge',
+                        'UnbundledRates.MeteringRetailCustomerCharge',)
+                    ->first();
+
+            $ratesExtension = DB::connection('sqlsrv2')
+                    ->table('UnbundledRatesExtension')
+                    ->where('ConsumerType', $bill->ConsumerType)
+                    ->where('ServicePeriodEnd', $bill->ServicePeriodEnd)
+                    ->select('UnbundledRatesExtension.Item2',
+                        'UnbundledRatesExtension.Item7 as OtherGenerationAdjRate',
+                        'UnbundledRatesExtension.Item8 as OtherTransmissionRate',
+                        'UnbundledRatesExtension.Item9 as OtherSystemLossRate')
+                    ->first();
+
+            return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension,  (array)$billsExtension), $this-> successStatus); 
+        }
+    }
+
 }

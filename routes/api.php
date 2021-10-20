@@ -35,6 +35,7 @@ Route::post('insert-token', [UserController::class, 'insertToken']);
 // BILLS
 Route::get('get-latest-bills', [BillsController::class, 'getLatestBills']);
 Route::get('get-unpaid-bills', [BillsController::class, 'getUnpaidBills']);
+Route::get('get-bill-details', [BillsController::class, 'getBillDetails']);
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', [UserController::class, 'details']);
