@@ -64,6 +64,9 @@ class BillsController extends Controller
                             'Bills.DueDate',
                             'Bills.ServiceDateFrom',
                             'Bills.ServiceDateTo',
+                            'Bills.PowerPreviousReading',
+                            'Bills.PowerPresentReading',
+                            'Bills.PowerKWH',
                             'Bills.GenerationSystemAmt',
                             'Bills.TransmissionSystemAmt',
                             'Bills.SystemLossAmt',
@@ -72,7 +75,24 @@ class BillsController extends Controller
                             'Bills.SupplySystemAmt as RetailElectricServiceAmount',
                             'Bills.SupplyRetailCustomerAmt as RetailElectricServiceAmountKW',
                             'Bills.MeteringSystemAmt',
-                            'Bills.MeteringRetailCustomerAmt',)
+                            'Bills.MeteringRetailCustomerAmt',
+                            'Bills.MissionaryElectrificationAmt',
+                            'Bills.FPCAAdjustmentAmt as NPCStraindedDebtsAmount',
+                            'Bills.ForexAdjustmentAmt as NPCStrandedCostAmount',
+                            'Bills.EnvironmentalAmt',
+                            'Bills.ACRM_TAFPPCA',
+                            'Bills.ACRM_TAFxA',
+                            'Bills.DAA_GRAM',
+                            'Bills.DAA_ICERA',
+                            'Bills.FBHCAmt as FranchiseTaxAmount',
+                            'Bills.LifelineSubsidyAmt',
+                            'Bills.Item4 as FitAllAmount',
+                            'Bills.Others as OtherChargesAmount',
+                            'Bills.DAA_VAT as DaaVatAmount',
+                            'Bills.ACRM_VAT as AcrmVatAmount',
+                            'Bills.PR as TransformerRental',
+                            'Bills.SeniorCitizenSubsidy',
+                            'Bills.Remarks as SubscriberNo',)
                     ->first();
 
         if ($bill == null) {
@@ -84,7 +104,18 @@ class BillsController extends Controller
                     ->where('ServicePeriodEnd', $bill->ServicePeriodEnd)
                     ->select('BillsExtension.Item18 as OtherGenerationAdj',
                         'BillsExtension.Item19 as OtherTransmissionAdj',
-                        'BillsExtension.Item20 as OtherSystemLossAdj',)
+                        'BillsExtension.Item20 as OtherSystemLossAdj',
+                        'BillsExtension.Item16 as BusinessTaxAmount',
+                        'BillsExtension.Item17 as RealPropertyTaxAmount',
+                        'BillsExtension.Item21 as OtherLifelineAmount',
+                        'BillsExtension.Item10 as RFSCAmount',
+                        'BillsExtension.Item22 as OtherSeniorAdjAmount',
+                        'BillsExtension.GenerationVAT',
+                        'BillsExtension.TransmissionVAT',
+                        'BillsExtension.SLVAT as SystemsLossVat',
+                        'BillsExtension.DistributionVAT',
+                        'BillsExtension.OthersVAT',
+                        'BillsExtension.Item5 as MandatoryReducAmount',)
                     ->first();
 
             $rates = DB::connection('sqlsrv2')
@@ -99,7 +130,24 @@ class BillsController extends Controller
                         'UnbundledRates.SupplySystemCharge as RetailElectricServiceRate',
                         'UnbundledRates.SupplyRetailCustomerCharge as RetailElectricServiceRateKW',
                         'UnbundledRates.MeteringSystemCharge',
-                        'UnbundledRates.MeteringRetailCustomerCharge',)
+                        'UnbundledRates.MeteringRetailCustomerCharge',
+                        'UnbundledRates.MissionaryElectrificationCharge',
+                        'UnbundledRates.FPCAAdjustmentCharge as NPCStrandedDebtsRate',
+                        'UnbundledRates.ForexAdjustmentCharge as NPCStrandedCostRate',
+                        'UnbundledRates.EnvironmentalCharge',
+                        'UnbundledRates.ACRM_TAFPPCACharge',
+                        'UnbundledRates.ACRM_TAFxACharge',
+                        'UnbundledRates.DAA_GRAMCharge',
+                        'UnbundledRates.DAA_ICERACharge',
+                        'UnbundledRates.FBHCCharge as FranchiseTaxRate',
+                        'UnbundledRates.ACRM_TAFxACharge as RealPropertyTaxRate',
+                        'UnbundledRates.LifelineSubsidyCharge',
+                        'UnbundledRates.MCC as RFSCRate',
+                        'UnbundledRates.PPARefund as FitAllRate',
+                        'UnbundledRates.CrossSubsidyCreditCharge as SystemLossVatRate',
+                        'UnbundledRates.DAA_VAT as DaaVatRate',
+                        'UnbundledRates.ACRM_VAT as AcrmVatRate',
+                        'UnbundledRates.SeniorCitizenSubsidyCharge',)
                     ->first();
 
             $ratesExtension = DB::connection('sqlsrv2')
@@ -109,7 +157,15 @@ class BillsController extends Controller
                     ->select('UnbundledRatesExtension.Item2',
                         'UnbundledRatesExtension.Item7 as OtherGenerationAdjRate',
                         'UnbundledRatesExtension.Item8 as OtherTransmissionRate',
-                        'UnbundledRatesExtension.Item9 as OtherSystemLossRate')
+                        'UnbundledRatesExtension.Item9 as OtherSystemLossRate',
+                        'UnbundledRatesExtension.Item6 as BusinessTaxRate',
+                        'UnbundledRatesExtension.Item10 as OtherLifelineRate',                        
+                        'UnbundledRatesExtension.Item11 as OtherSeniorAdjRate',                       
+                        'UnbundledRatesExtension.Item3 as GenerationVatRate',                     
+                        'UnbundledRatesExtension.Item4 as TransmissionVatRate',                   
+                        'UnbundledRatesExtension.Item2 as DistributionVatRate',                
+                        'UnbundledRatesExtension.Item2 as OthersVatRate',              
+                        'UnbundledRatesExtension.Item5 as MandatoryReducRate',)
                     ->first();
 
             return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension,  (array)$billsExtension), $this-> successStatus); 
