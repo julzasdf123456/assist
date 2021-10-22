@@ -28,6 +28,7 @@ Route::get('get-account-by-account-master', [AccountMastersController::class, 'g
 // ACCOUNT LINKS
 Route::get('get-linked-accounts', [AccountLinksController::class, 'getLinkedAccounts']);
 Route::post('link-account', [AccountLinksController::class, 'linkAccount']);
+Route::get('remove-link', [AccountLinksController::class, 'removeLink']);
 
 // TOKEN
 Route::post('insert-token', [UserController::class, 'insertToken']);
@@ -36,6 +37,9 @@ Route::post('insert-token', [UserController::class, 'insertToken']);
 Route::get('get-latest-bills', [BillsController::class, 'getLatestBills']);
 Route::get('get-unpaid-bills', [BillsController::class, 'getUnpaidBills']);
 Route::get('get-bill-details', [BillsController::class, 'getBillDetails']);
+Route::get('get-account-information', [BillsController::class, 'getAccountInformation']);
+Route::get('get-previous-for-graph', [BillsController::class, 'getPreviousForGraph']);
+
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', [UserController::class, 'details']);

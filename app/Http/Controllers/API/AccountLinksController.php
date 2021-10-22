@@ -48,4 +48,17 @@ class AccountLinksController extends Controller
         }
     }
 
+    /**
+     * REMOVE ACCOUNT LINK
+     * @Params
+     * q = account number
+     * u = userid
+     */
+    public function removeLink(Request $request) {
+        if (AccountLinks::where('UserId', $request['u'])->where('AccountNumber', $request['q'])->delete()) {
+            return response()->json(['success' => 'Account Link Deleted'], $this->successStatus); 
+        } else {
+            return response()->json(['error' => 'No linked accounts'], 404); 
+        }
+    }
 }

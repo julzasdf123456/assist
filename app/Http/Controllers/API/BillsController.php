@@ -49,6 +49,7 @@ class BillsController extends Controller
     }
 
     /**
+     * GET FULL BILL DETAILS
      * @Params
      * q = Bill Number
      */
@@ -169,6 +170,62 @@ class BillsController extends Controller
                     ->first();
 
             return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension,  (array)$billsExtension), $this-> successStatus); 
+        }
+    }
+
+    /**
+     * GET FULL ACCOUNT INFO
+     * @Params
+     * q = Account Number
+     */
+    public function getAccountInformation(Request $request) {
+        $accountMaster = DB::connection('sqlsrv2')
+                    ->table('AccountMaster')
+                    ->where('AccountNumber', $request['q'])
+                    ->select('AccountNumber',
+                            'ConsumerName',
+                            'ConsumerAddress',
+                            'ConsumerType',
+                            'AccountStatus',
+                            'MeterNumber',
+                            'Transformer',
+                            'Pole',
+                            'ComputeMode',
+                            'Email',
+                            'ContactNumber')
+                    ->first();
+
+        if ($accountMaster != null) {
+            $accountMasterExtension = DB::connection('sqlsrv2')
+                    ->table('AccountMasterExtension')
+                    ->where('AccountNumber', $request['q'])
+                    ->select('ServiceVoltage')
+                    ->first();
+
+            return response()->json((object)array_merge((array)$accountMaster, (array)$accountMasterExtension), $this-> successStatus); 
+        } else {
+            return response()->json(['error' => 'Account not found'], 404);
+        }
+    }
+
+    /**
+     * GET PREVIOUS CONSUMPTION FOR GRAPH
+     * @ PARAMS
+     * q = Account Number
+     */
+    public function getPreviousForGraph(Request $request) {
+        $bills = DB::connection('sqlsrv2')
+            ->table('Bills')
+            ->where('AccountNumber', $request['q'])
+            ->select('NetAmount', 'PowerKWH', 'ServicePeriodEnd')
+            ->orderByDesc('ServicePeriodEnd')
+            ->limit(7)
+            ->get();
+
+        if ($bills != null) {
+            return response()->json($bills, $this-> successStatus); 
+        } else {
+            return response()->json(['error' => 'Bills not found'], 404);
         }
     }
 
