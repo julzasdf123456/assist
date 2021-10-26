@@ -18,7 +18,7 @@ use App\Http\Controllers\AccountMasterController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Auth::routes();
@@ -45,3 +45,5 @@ Route::resource('tokens', App\Http\Controllers\TokensController::class);
 Route::resource('bills', App\Http\Controllers\BillsController::class);
 
 Route::resource('paidBills', App\Http\Controllers\PaidBillsController::class);
+
+Route::resource('userAppLogs', App\Http\Controllers\UserAppLogsController::class);

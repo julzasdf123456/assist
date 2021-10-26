@@ -25,7 +25,8 @@ class Users extends Model
     public $connection = "sqlsrv";
 
     public $fillable = [
-        
+        'activity',
+        'remember_token',
     ];
 
     /**
@@ -43,7 +44,8 @@ class Users extends Model
      * @var array
      */
     public static $rules = [
-        
+        'activity' => 'string|nullable',
+        'remember_token' => 'string|nullable',
     ];
 
     

@@ -21,6 +21,7 @@ use App\Http\Controllers\API\BillsController;
 // LOGIN AND REGISTER
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
+Route::get('logout', [UserController::class, 'logout']);
 
 // ACCOUNT MASTER
 Route::get('get-account-by-account-master', [AccountMastersController::class, 'getAccountByAccountNumber']);

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User; 
 use App\Models\Tokens;
 use Illuminate\Support\Facades\Auth; 
+use App\Models\UserAppLogs;
 use Validator;
 class UserController extends Controller 
 {
@@ -20,11 +21,42 @@ class UserController extends Controller
             $success['token'] =  $user->createToken('assist')-> accessToken; 
             $success['username'] = request('username');
             $success['id'] = $user->id;
+
+            // SET ACTIVITY
+            $userM = User::find($user->id);
+            $userM->activity = 'active';
+            // $userM->remember_token = $success['token'];
+            $userM->save();
+
+            // REGISTER LOG
+            $log = new UserAppLogs;
+            $log->UserId = $user->id;
+            $log->Type = "Logged in";
+            $log->save();
+
             return response()->json($success, $this-> successStatus); 
         } 
         else{ 
             return response()->json(['error'=>'Unauthorised'], 401); 
         } 
+    }
+
+    /**
+     * LOGOUT API
+     */
+    public function logout(Request $request) {
+        $user = User::find($request['id']);
+
+        $user->activity = 'inactive';
+        $user->save();
+
+        // REGISTER LOG
+        $log = new UserAppLogs;
+        $log->UserId = $user->id;
+        $log->Type = "Logged out";
+        $log->save();
+
+        return response()->json(['ok', $this->success]);
     }
 
     public function insertToken(Request $request) {

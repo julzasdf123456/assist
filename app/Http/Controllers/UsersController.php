@@ -8,6 +8,8 @@ use App\Repositories\UsersRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\AccountLinks;
+use App\Models\User;
+use App\Models\UserAppLogs;
 use Flash;
 use Response;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +22,7 @@ class UsersController extends AppBaseController
 
     public function __construct(UsersRepository $usersRepo)
     {
+        $this->middleware('auth');
         $this->usersRepository = $usersRepo;
     }
 
@@ -32,10 +35,11 @@ class UsersController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $users = $this->usersRepository->all();
+        $users = DB::connection('sqlsrv')->table('users')->orderBy('activity')->orderBy('name')->paginate(40);
 
-        return view('users.index')
-            ->with('users', $users);
+        $active = User::where('activity', 'active')->get();
+
+        return view('users.index', ['users' => $users, 'active' => $active]);
     }
 
     /**
@@ -77,6 +81,7 @@ class UsersController extends AppBaseController
     {
         $users = $this->usersRepository->find($id);
         $accountLinks = AccountLinks::where('UserId', $id)->get();
+        $appLogs = DB::connection('sqlsrv')->table('UserAppLogs')->where('UserId', $id)->orderByDesc('created_at')->paginate(10);
 
         if (empty($users)) {
             Flash::error('Users not found');
@@ -84,7 +89,7 @@ class UsersController extends AppBaseController
             return redirect(route('users.index'));
         }
 
-        return view('users.show', ['users' => $users, 'accountLinks' => $accountLinks]);
+        return view('users.show', ['users' => $users, 'accountLinks' => $accountLinks, 'appLogs' => $appLogs]);
     }
 
     /**

@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Users Details</h1>
+                    <h4>Users Stats</h4>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-default float-right"
@@ -30,33 +30,77 @@
     </div>
 
     <div class="content px-3">
-        <h5>Linked Accounts</h5>
-        <table class="table">
-            <thead>
-                <th>Account Number</th>
-                <th>Action</th>
-            </thead>
-            <tbody>
-                @foreach ($accountLinks as $accountLinks)
-                <tr>
-                    <td>{{ $accountLinks->UserId }}</td>
-                <td>{{ $accountLinks->AccountNumber }}</td>
-                    <td width="120">
-                        {!! Form::open(['route' => ['accountLinks.destroy', $accountLinks->id], 'method' => 'delete']) !!}
-                        <div class='btn-group'>
-                            <a href="{{ route('accountLinks.show', [$accountLinks->id]) }}" class='btn btn-default btn-xs'>
-                                <i class="far fa-eye"></i>
-                            </a>
-                            <a href="{{ route('accountLinks.edit', [$accountLinks->id]) }}" class='btn btn-default btn-xs'>
-                                <i class="far fa-edit"></i>
-                            </a>
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <span class="card-title">Linked Accounts</span>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                                <th>Account Number</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                @foreach ($accountLinks as $accountLinks)
+                                <tr>
+                                    <td>{{ $accountLinks->UserId }}</td>
+                                <td>{{ $accountLinks->AccountNumber }}</td>
+                                    <td width="120">
+                                        {!! Form::open(['route' => ['accountLinks.destroy', $accountLinks->id], 'method' => 'delete']) !!}
+                                        <div class='btn-group'>
+                                            <a href="{{ route('accountLinks.show', [$accountLinks->id]) }}" class='btn btn-default btn-xs'>
+                                                <i class="far fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('accountLinks.edit', [$accountLinks->id]) }}" class='btn btn-default btn-xs'>
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                                        </div>
+                                        {!! Form::close() !!}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-6">
+                <div class="card border-0">
+                    <div class="card-header">
+                        <span class="card-title">Activity</span>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Timestamp</th>
+                            </thead>
+                            <tbody>
+                                @foreach ($appLogs as $item)
+                                    <tr>
+                                        <td>{{ $item->Type }}</td>
+                                        <td>{{ $item->Details }}</td>
+                                        <td>{{ date('F d, Y h:i:s A', strtotime($item->created_at)) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <br>
+                        <div class="row justify-content-md-center">
+                            <div class="col-md-auto">
+                                {{ $appLogs->links() }}
+                            </div>
                         </div>
-                        {!! Form::close() !!}
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 @endsection

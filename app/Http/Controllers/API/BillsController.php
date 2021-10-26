@@ -6,6 +6,7 @@ use App\Models\AccountLinks;
 use App\Models\Bills;
 use App\Models\PaidBills;
 use Illuminate\Support\Facades\Auth; 
+use App\Models\UserAppLogs;
 use Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -168,6 +169,13 @@ class BillsController extends Controller
                         'UnbundledRatesExtension.Item2 as OthersVatRate',              
                         'UnbundledRatesExtension.Item5 as MandatoryReducRate',)
                     ->first();
+
+            // REGISTER LOG
+            $log = new UserAppLogs;
+            $log->UserId = $request['u'];
+            $log->Type = "Queried Bill";
+            $log->Details = "Queried bill with bill number " . $bill->BillNumber;
+            $log->save();
 
             return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension,  (array)$billsExtension), $this-> successStatus); 
         }
