@@ -113,6 +113,18 @@ class UserController extends Controller
         
     }
 
+    public function resetPassword(Request $request) {
+        $user = User::find($request['id']);
+
+        $user->password = bcrypt($request['password']); 
+
+        if ($user->save()) {
+            return response()->json(['response' => 'ok'], $this->successStatus);
+        } else {
+            return response()->json(['response' => 'error'], 400);
+        }
+    }
+
     /** 
      * details api 
      * 

@@ -227,7 +227,7 @@ class BillsController extends Controller
             ->where('AccountNumber', $request['q'])
             ->select('NetAmount', 'PowerKWH', 'ServicePeriodEnd')
             ->orderByDesc('ServicePeriodEnd')
-            ->limit(7)
+            ->limit(12)
             ->get();
 
         if ($bills != null) {
@@ -237,4 +237,20 @@ class BillsController extends Controller
         }
     }
 
+    public function getAllBillByYear(Request $request) {
+        $bills = DB::connection('sqlsrv2')
+                    ->table('Bills')
+                    ->leftJoin('PaidBills', 'Bills.BillNumber', '=', 'PaidBills.BillNumber')
+                    ->select('Bills.BillNumber', 'Bills.ServicePeriodEnd', 'Bills.PowerKWH', 'Bills.NetAmount', 'PaidBills.NetAmount as NetAmountPaid')
+                    ->where('Bills.AccountNumber', $request['q'])
+                    ->whereBetween('Bills.ServicePeriodEnd', [date('Y-m-d', strtotime($request['y'] . '-01-01')), date('Y-m-d', strtotime($request['y'] . '-12-30'))])
+                    ->orderByDesc('Bills.ServicePeriodEnd')
+                    ->get();
+
+        if ($bills == null) {
+            return response()->json(['error' => 'No bills found'], 404);
+        } else {
+            return response()->json($bills, $this-> successStatus); 
+        }
+    }
 }

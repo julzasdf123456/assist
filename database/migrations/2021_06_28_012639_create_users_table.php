@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('activity')->nullable(); // active, not active
             $table->string('remember_token', 3000)->nullable();
+            $table->string('contactno', 200)->nullable();
             $table->timestamps();
         });
     }

@@ -27,6 +27,7 @@ class Users extends Model
     public $fillable = [
         'activity',
         'remember_token',
+        'contactno'
     ];
 
     /**
@@ -35,7 +36,8 @@ class Users extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer'
+        'id' => 'integer',
+        'contactno' => 'string',
     ];
 
     /**
@@ -46,6 +48,7 @@ class Users extends Model
     public static $rules = [
         'activity' => 'string|nullable',
         'remember_token' => 'string|nullable',
+        'contactno' => 'string|nullable',
     ];
 
     

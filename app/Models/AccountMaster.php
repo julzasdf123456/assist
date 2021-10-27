@@ -104,6 +104,7 @@ class AccountMaster extends Model
         'ConsumerAddress',
         'ConsumerType',
         'AccountStatus',
+        'Email',
     ];
 
     /**
@@ -126,6 +127,7 @@ class AccountMaster extends Model
         'ConsumerAddress' => 'string',
         'ConsumerType' => 'string',
         'AccountStatus' => 'string',
+        'Email' => 'string',
     ];
 
     /**
@@ -146,6 +148,7 @@ class AccountMaster extends Model
         'ConsumerAddress' => 'nullable|string|max:128',
         'ConsumerType' => 'nullable|string|max:15',
         'AccountStatus' => 'nullable|string|max:20',
+        'Email' => 'nullable|string',
     ];
 
     
