@@ -47,3 +47,5 @@ Route::resource('bills', App\Http\Controllers\BillsController::class);
 Route::resource('paidBills', App\Http\Controllers\PaidBillsController::class);
 
 Route::resource('userAppLogs', App\Http\Controllers\UserAppLogsController::class);
+
+Route::resource('notifiers', App\Http\Controllers\NotifiersController::class);

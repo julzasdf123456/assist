@@ -13,8 +13,16 @@ class CreateTableNotifiers extends Migration
      */
     public function up()
     {
-        Schema::create('table_notifiers', function (Blueprint $table) {
+        Schema::connection('sqlsrv')->create('Notifiers', function (Blueprint $table) { // Notifications, Events, ETC
             $table->id();
+            $table->string('Type', 100)->nullable(); // Interruption, Event, Advisory, Information
+            $table->string('Title', 500)->nullable();
+            $table->string('Details', 3000)->nullable();
+            $table->string('Town', 10)->nullable();
+            $table->string('Barangay', 10)->nullable();
+            $table->datetime('DateTimeFrom')->nullable();
+            $table->datetime('DateTimeTo')->nullable();
+            $table->string('CommentsEnabled')->nullable(); // True, False
             $table->timestamps();
         });
     }
@@ -26,6 +34,6 @@ class CreateTableNotifiers extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_notifiers');
+        Schema::connection('sqlsrv')->dropIfExists('Notifiers');
     }
 }

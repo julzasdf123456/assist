@@ -17,6 +17,7 @@ class UserAppLogsController extends AppBaseController
 
     public function __construct(UserAppLogsRepository $userAppLogsRepo)
     {
+        $this->middleware('auth');
         $this->userAppLogsRepository = $userAppLogsRepo;
     }
 

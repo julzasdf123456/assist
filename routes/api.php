@@ -6,6 +6,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\AccountMastersController;
 use App\Http\Controllers\API\AccountLinksController;
 use App\Http\Controllers\API\BillsController;
+use App\Http\Controllers\API\NotifiersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,8 @@ Route::get('get-bill-details', [BillsController::class, 'getBillDetails']);
 Route::get('get-account-information', [BillsController::class, 'getAccountInformation']);
 Route::get('get-previous-for-graph', [BillsController::class, 'getPreviousForGraph']);
 
+// Notifications
+Route::get('get-notifications', [NotifiersController::class, 'getNotifications']);
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', [UserController::class, 'details']);

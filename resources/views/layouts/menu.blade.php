@@ -15,3 +15,11 @@
 
 
 
+<li class="nav-item">
+    <a href="{{ route('notifiers.index') }}"
+       class="nav-link {{ Request::is('notifiers*') ? 'active' : '' }}">
+        <p>Notifiers</p>
+    </a>
+</li>
+
+
