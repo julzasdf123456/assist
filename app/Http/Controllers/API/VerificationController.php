@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth; 
 use Nexmo\Laravel\Facade\Nexmo;
 use Illuminate\Support\Facades\DB;
+use App\Models\UserAppLogs;
 use Validator;
 
 class VerificationController extends Controller {
@@ -32,6 +33,13 @@ class VerificationController extends Controller {
                         'AccountLinks.AccountNumber',
                         'AccountLinks.ConsumerName')
                 ->first();
+
+        // REGISTER LOG
+        $log = new UserAppLogs;
+        $log->UserId = $userDetails->id;
+        $log->Type = "Password Reset Attempted";
+        $log->Details = "Tried to retrieve email to be used on resetting password.";
+        $log->save();
         
         if ($userDetails != null) {
             return response()->json($userDetails, $this->successStatus);

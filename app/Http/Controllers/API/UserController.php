@@ -119,6 +119,12 @@ class UserController extends Controller
         $user->password = bcrypt($request['password']); 
 
         if ($user->save()) {
+            // REGISTER LOG
+            $log = new UserAppLogs;
+            $log->UserId = $user->id;
+            $log->Type = "Resetted Password";
+            $log->save();
+
             return response()->json(['response' => 'ok'], $this->successStatus);
         } else {
             return response()->json(['response' => 'error'], 400);

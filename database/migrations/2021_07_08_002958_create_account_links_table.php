@@ -18,6 +18,7 @@ class CreateAccountLinksTable extends Migration
             $table->string('UserId');
             $table->string('AccountNumber');
             $table->string('ConsumerName', 500);
+            $table->string('Status', 50)->nullable(); // Pending, Linked
             $table->timestamps();
         });
     }

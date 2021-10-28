@@ -34,6 +34,7 @@ class AccountLinks extends Model
         'UserId',
         'AccountNumber',
         'ConsumerName',
+        'Status'
     ];
 
     /**
@@ -45,7 +46,8 @@ class AccountLinks extends Model
         'id' => 'integer',
         'UserId' => 'string',
         'AccountNumber' => 'string',
-        'ConsumerName' => 'string'
+        'ConsumerName' => 'string',
+        'Status' => 'string'
     ];
 
     /**
@@ -58,7 +60,8 @@ class AccountLinks extends Model
         'AccountNumber' => 'required|string|max:255',
         'ConsumerName' => 'required|string|max:500',
         'created_at' => 'nullable',
-        'updated_at' => 'nullable'
+        'updated_at' => 'nullable',
+        'Status' => 'nullable|string'
     ];
 
     

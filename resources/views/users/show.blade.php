@@ -32,6 +32,7 @@
     <div class="content px-3">
         <div class="row">
             <div class="col-lg-5 col-md-6">
+                {{-- LINKED ACCOUNTS --}}
                 <div class="card card-primary card-outline">
                     <div class="card-header">
                         <span class="card-title">Linked Accounts</span>
@@ -46,8 +47,8 @@
                             <tbody>
                                 @foreach ($accountLinks as $accountLinks)
                                 <tr>
-                                    <td>{{ $accountLinks->UserId }}</td>
-                                <td>{{ $accountLinks->AccountNumber }}</td>
+                                    <td>{{ $accountLinks->AccountNumber }}</td>
+                                    <td>{{ $accountLinks->ConsumerName }}</td>
                                     <td width="120">
                                         {!! Form::open(['route' => ['accountLinks.destroy', $accountLinks->id], 'method' => 'delete']) !!}
                                         <div class='btn-group'>
@@ -60,6 +61,34 @@
                                             {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
                                         </div>
                                         {!! Form::close() !!}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card card-danger card-outline">
+                    <div class="card-header">
+                        <span class="card-title">Pending Account Link Requests</span>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                                <th>Account Number</th>
+                                <th>Account Name</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                @foreach ($accountLinksPending as $accountLinks)
+                                <tr>
+                                    <td>{{ $accountLinks->AccountNumber }}</td>
+                                    <td>{{ $accountLinks->ConsumerName }}</td>
+                                    <td width="120">                                        
+                                        <a href="{{ route('accountLinks.approve-account-link', [$accountLinks->id]) }}" class="btn btn-xs btn-success" title="Approve"><i class="fas fa-check-circle"></i></a>
+                                        <a href="{{ route('accountLinks.reject-account-link', [$accountLinks->id]) }}" class="btn btn-xs btn-danger" title="Reject"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 @endforeach

@@ -14,8 +14,12 @@ use App\Models\Notifiers;
 class NotifiersController extends Controller {
     public $successStatus = 200;
 
-    public function getNotifications() {
+    public function getNotifications(Request $request) {
         $notifications = Notifiers::whereBetween('created_at', [date('Y-m-d', strtotime('-30 days')), date('Y-m-d', strtotime('+1 day'))])
+                    ->where(function ($query) use ($request) {
+                        $query->where('ToUser', $request['u'])
+                            ->orWhereNull('ToUser');
+                    })
                     ->orderByDesc('created_at')
                     ->get();
 

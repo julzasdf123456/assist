@@ -80,7 +80,8 @@ class UsersController extends AppBaseController
     public function show($id)
     {
         $users = $this->usersRepository->find($id);
-        $accountLinks = AccountLinks::where('UserId', $id)->get();
+        $accountLinks = AccountLinks::where('UserId', $id)->where('Status', 'Linked')->get();
+        $accountLinksPending = AccountLinks::where('UserId', $id)->where('Status', 'Pending')->get();
         $appLogs = DB::connection('sqlsrv')->table('UserAppLogs')->where('UserId', $id)->orderByDesc('created_at')->paginate(10);
 
         if (empty($users)) {
@@ -89,7 +90,7 @@ class UsersController extends AppBaseController
             return redirect(route('users.index'));
         }
 
-        return view('users.show', ['users' => $users, 'accountLinks' => $accountLinks, 'appLogs' => $appLogs]);
+        return view('users.show', ['users' => $users, 'accountLinks' => $accountLinks, 'appLogs' => $appLogs, 'accountLinksPending' => $accountLinksPending]);
     }
 
     /**

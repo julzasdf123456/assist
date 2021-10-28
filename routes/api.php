@@ -34,6 +34,7 @@ Route::post('update-contact-info', [AccountMastersController::class, 'updateCont
 Route::get('get-linked-accounts', [AccountLinksController::class, 'getLinkedAccounts']);
 Route::post('link-account', [AccountLinksController::class, 'linkAccount']);
 Route::get('remove-link', [AccountLinksController::class, 'removeLink']);
+Route::get('get-pending-accounts', [AccountLinksController::class, 'getPendingAccounts']);
 
 // TOKEN
 Route::post('insert-token', [UserController::class, 'insertToken']);

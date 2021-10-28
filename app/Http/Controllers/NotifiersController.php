@@ -31,7 +31,9 @@ class NotifiersController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $notifiers = Notifiers::orderByDesc('created_at')->get();
+        $notifiers = Notifiers::orderByDesc('created_at')
+                    ->whereIn('Type', ['Information', 'Power Interruption', 'Advisory', 'Event'])
+                    ->get();
 
         return view('notifiers.index')
             ->with('notifiers', $notifiers);

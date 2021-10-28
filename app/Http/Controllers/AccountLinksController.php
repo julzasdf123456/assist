@@ -7,6 +7,10 @@ use App\Http\Requests\UpdateAccountLinksRequest;
 use App\Repositories\AccountLinksRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\AccountLinks;
+use App\Models\Notifiers;
+use App\Models\UserAppLogs;
+use Illuminate\Support\Facades\Auth; 
 use Flash;
 use Response;
 
@@ -17,6 +21,7 @@ class AccountLinksController extends AppBaseController
 
     public function __construct(AccountLinksRepository $accountLinksRepo)
     {
+        $this->middleware('auth');
         $this->accountLinksRepository = $accountLinksRepo;
     }
 
@@ -149,8 +154,77 @@ class AccountLinksController extends AppBaseController
 
         $this->accountLinksRepository->delete($id);
 
+        // REGISTER LOG
+        $log = new UserAppLogs;
+        $log->UserId = $accountLinks->UserId;
+        $log->Type = "Account " . $accountLinks->AccountNumber . " Removed";
+        $log->Details = "Account number " . $accountLinks->AccountNumber . " was removed by " . Auth::user()->name . ".";
+        $log->save();
+
+        // ADD TO NOTIFIERS
+        $notifier = new Notifiers;
+        $notifier->Type = "Link Approved";
+        $notifier->ToUser = $accountLinks->UserId;
+        $notifier->Title = $accountLinks->AccountNumber . " Removed";
+        $notifier->Details = "This account was removed by admins for security reason.";
+        $notifier->CommentsEnabled = "False";
+        $notifier->save();
+
         Flash::success('Account Links deleted successfully.');
 
-        return redirect(route('users.index'));
+        return redirect(route('users.show', [$accountLinks->UserId]));
+    }
+
+    public function approveAccountLink($id) {
+        $accountLinks = AccountLinks::find($id);
+
+        if ($accountLinks != null) {
+            $accountLinks->Status = "Linked";
+            $accountLinks->save();
+
+            // ADD TO NOTIFIERS
+            $notifier = new Notifiers;
+            $notifier->Type = "Link Approved";
+            $notifier->ToUser = $accountLinks->UserId;
+            $notifier->Title = $accountLinks->AccountNumber . " Approved";
+            $notifier->Details = "Your request for account linking for this account has been approved.";
+            $notifier->CommentsEnabled = "False";
+            $notifier->save();
+
+            // REGISTER LOG
+            $log = new UserAppLogs;
+            $log->UserId = $accountLinks->UserId;
+            $log->Type = "Account Link with Account No. " . $accountLinks->AccountNumber . " Approved";
+            $log->Details = "Approved by " . Auth::user()->name;
+            $log->save();
+        }        
+
+        return redirect(route('users.show', [$accountLinks->UserId]));
+    }
+
+    public function rejectAccountLink($id) {
+        $accountLinks = AccountLinks::find($id);
+
+        if ($accountLinks != null) {
+            $accountLinks->delete();
+
+            // ADD TO NOTIFIERS
+            $notifier = new Notifiers;
+            $notifier->Type = "Link Approved";
+            $notifier->ToUser = $accountLinks->UserId;
+            $notifier->Title = $accountLinks->AccountNumber . " Rejected";
+            $notifier->Details = "Your request for account linking for this account has been Rejected.";
+            $notifier->CommentsEnabled = "False";
+            $notifier->save();
+
+            // REGISTER LOG
+            $log = new UserAppLogs;
+            $log->UserId = $accountLinks->UserId;
+            $log->Type = "Account Link with Account No. " . $accountLinks->AccountNumber . " Rejected";
+            $log->Details = "Rejected by " . Auth::user()->name;
+            $log->save();
+        }        
+
+        return redirect(route('users.show', [$accountLinks->UserId]));
     }
 }

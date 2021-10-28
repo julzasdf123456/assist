@@ -44,7 +44,8 @@ class Notifiers extends Model
         'Barangay',
         'DateTimeFrom',
         'DateTimeTo',
-        'CommentsEnabled'
+        'CommentsEnabled',
+        'ToUser'
     ];
 
     /**
@@ -61,6 +62,7 @@ class Notifiers extends Model
         'Barangay' => 'string',
         'DateTimeFrom' => 'datetime',
         'DateTimeTo' => 'datetime',
+        'ToUser' => 'string',
         'CommentsEnabled' => 'string'
     ];
 
@@ -79,7 +81,8 @@ class Notifiers extends Model
         'DateTimeTo' => 'nullable',
         'CommentsEnabled' => 'nullable|string|max:255',
         'created_at' => 'nullable',
-        'updated_at' => 'nullable'
+        'updated_at' => 'nullable',
+        'ToUser' => 'nullable|string'
     ];
 
     
