@@ -115,92 +115,92 @@ class Bills extends Model
     public $connection = "sqlsrv2";
 
     public $fillable = [
-        'rowguid',
-        'AccountNumber',
-        'PowerPreviousReading',
-        'PowerPresentReading',
-        'DemandPreviousReading',
-        'DemandPresentReading',
-        'NetMeteringNetAmount',
-        'ReferenceNo',
-        'DAA_GRAM',
-        'DAA_ICERA',
-        'ACRM_TAFPPCA',
-        'ACRM_TAFxA',
-        'DAA_VAT',
-        'ACRM_VAT',
-        'NetPresReading',
-        'NetPowerKWH',
-        'NetGenerationAmount',
-        'CreditKWH',
-        'CreditAmount',
-        'NetMeteringSystemAmt',
-        'Item3',
-        'Item4',
-        'SeniorCitizenDiscount',
-        'SeniorCitizenSubsidy',
-        'UCMERefund',
-        'NetPrevReading',
-        'CrossSubsidyCreditAmt',
-        'MissionaryElectrificationAmt',
-        'EnvironmentalAmt',
-        'LifelineSubsidyAmt',
-        'Item1',
-        'Item2',
-        'DistributionSystemAmt',
-        'SupplyRetailCustomerAmt',
-        'SupplySystemAmt',
-        'MeteringRetailCustomerAmt',
-        'MeteringSystemAmt',
-        'SystemLossAmt',
-        'FBHCAmt',
-        'FPCAAdjustmentAmt',
-        'ForexAdjustmentAmt',
-        'TransmissionDemandAmt',
-        'TransmissionSystemAmt',
-        'DistributionDemandAmt',
-        'EPAmount',
-        'PCAmount',
-        'LoanCondonation',
-        'BillingPeriod',
-        'UnbundledTag',
-        'GenerationSystemAmt',
-        'PPCAAmount',
-        'UCAmount',
-        'MeterNumber',
-        'ConsumerType',
-        'BillType',
-        'QCAmount',
-        'PPA',
-        'PPAAmount',
-        'BasicAmount',
-        'PRADiscount',
-        'PRAAmount',
-        'PPCADiscount',
-        'AverageKWDemand',
-        'CoreLoss',
-        'Meter',
-        'PR',
-        'SDW',
-        'Others',
-        'ServiceDateFrom',
-        'ServiceDateTo',
-        'DueDate',
-        'BillNumber',
-        'Remarks',
-        'AverageKWH',
-        'Charges',
-        'Deductions',
-        'NetAmount',
-        'PowerRate',
-        'DemandRate',
-        'BillingDate',
-        'AdditionalKWH',
-        'AdditionalKWDemand',
-        'PowerKWH',
-        'KWHAmount',
-        'DemandKW',
-        'KWAmount'
+        // 'rowguid',
+        // 'AccountNumber',
+        // 'PowerPreviousReading',
+        // 'PowerPresentReading',
+        // 'DemandPreviousReading',
+        // 'DemandPresentReading',
+        // 'NetMeteringNetAmount',
+        // 'ReferenceNo',
+        // 'DAA_GRAM',
+        // 'DAA_ICERA',
+        // 'ACRM_TAFPPCA',
+        // 'ACRM_TAFxA',
+        // 'DAA_VAT',
+        // 'ACRM_VAT',
+        // 'NetPresReading',
+        // 'NetPowerKWH',
+        // 'NetGenerationAmount',
+        // 'CreditKWH',
+        // 'CreditAmount',
+        // 'NetMeteringSystemAmt',
+        // 'Item3',
+        // 'Item4',
+        // 'SeniorCitizenDiscount',
+        // 'SeniorCitizenSubsidy',
+        // 'UCMERefund',
+        // 'NetPrevReading',
+        // 'CrossSubsidyCreditAmt',
+        // 'MissionaryElectrificationAmt',
+        // 'EnvironmentalAmt',
+        // 'LifelineSubsidyAmt',
+        // 'Item1',
+        // 'Item2',
+        // 'DistributionSystemAmt',
+        // 'SupplyRetailCustomerAmt',
+        // 'SupplySystemAmt',
+        // 'MeteringRetailCustomerAmt',
+        // 'MeteringSystemAmt',
+        // 'SystemLossAmt',
+        // 'FBHCAmt',
+        // 'FPCAAdjustmentAmt',
+        // 'ForexAdjustmentAmt',
+        // 'TransmissionDemandAmt',
+        // 'TransmissionSystemAmt',
+        // 'DistributionDemandAmt',
+        // 'EPAmount',
+        // 'PCAmount',
+        // 'LoanCondonation',
+        // 'BillingPeriod',
+        // 'UnbundledTag',
+        // 'GenerationSystemAmt',
+        // 'PPCAAmount',
+        // 'UCAmount',
+        // 'MeterNumber',
+        // 'ConsumerType',
+        // 'BillType',
+        // 'QCAmount',
+        // 'PPA',
+        // 'PPAAmount',
+        // 'BasicAmount',
+        // 'PRADiscount',
+        // 'PRAAmount',
+        // 'PPCADiscount',
+        // 'AverageKWDemand',
+        // 'CoreLoss',
+        // 'Meter',
+        // 'PR',
+        // 'SDW',
+        // 'Others',
+        // 'ServiceDateFrom',
+        // 'ServiceDateTo',
+        // 'DueDate',
+        // 'BillNumber',
+        // 'Remarks',
+        // 'AverageKWH',
+        // 'Charges',
+        // 'Deductions',
+        // 'NetAmount',
+        // 'PowerRate',
+        // 'DemandRate',
+        // 'BillingDate',
+        // 'AdditionalKWH',
+        // 'AdditionalKWDemand',
+        // 'PowerKWH',
+        // 'KWHAmount',
+        // 'DemandKW',
+        // 'KWAmount'
     ];
 
     /**
@@ -392,5 +392,77 @@ class Bills extends Model
         'KWAmount' => 'nullable|integer'
     ];
 
+    public static function isNonResidential($consumerType) {
+        if ($consumerType == 'CS' || $consumerType == 'CL' || $consumerType == 'I') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function getSurchargableAmount($bill, $billExtension) {
+        $netAmount = $bill->NetAmount != null ? floatval($bill->NetAmount) : 0;
+        $excemptions = floatval($bill->ACRM_TAFPPCA) +
+                        floatval($bill->DAA_GRAM) +
+                        floatval($bill->Others) +
+                        floatval($billExtension->GenerationVAT) +
+                        floatval($billExtension->TransmissionVAT) +
+                        floatval($billExtension->SLVAT) +
+                        floatval($billExtension->DistributionVAT) +
+                        floatval($billExtension->OthersVAT) +
+                        floatval($bill->DAA_VAT)+
+                        floatval($bill->ACRM_VAT)+
+                        floatval($bill->FBHCAmt)+ // franchise
+                        floatval($billExtension->Item16) + // business
+                        floatval($billExtension->Item17) + // rpt
+                        floatval($bill->PR);
+        return round($netAmount - $excemptions, 2);
+    }
+
+    public static function getSurcharge($bill, $billExtension) {
+        if (Bills::isNonResidential($bill->ConsumerType)) {
+            // IF CS, CL, I
+            if (floatval($bill->PowerKWH) > 1000) {
+                // IF MORE THAN 1000 KWH
+                
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate . ' +30 days'))) {
+                    // IF MORE THAN 30 days of due date
+                    return (Bills::getSurchargableAmount($bill, $billExtension) * .05) + ((Bills::getSurchargableAmount($bill, $billExtension) * .05) * .12);
+                } else {
+                    if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                        return (Bills::getSurchargableAmount($bill, $billExtension) * .03) + ((Bills::getSurchargableAmount($bill, $billExtension) * .03) * .12);
+                    } else {
+                        // NO SURCHARGE
+                        return 0;
+                    }
+                }
+            } else {
+                // IF LESS THAN 1000 KWH
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                    return (Bills::getSurchargableAmount($bill, $billExtension) * .03) + ((Bills::getSurchargableAmount($bill, $billExtension) * .03) * .12);
+                } else {
+                    // NO SURCHARGE
+                    return 0;
+                }
+            }
+        } else {
+            if ($bill->ConsumerType == 'P') {
+                // IF PUBLIC BUILDING, NO SURCHARGE
+                return 0;
+            } else {
+                // RESIDENTIALS
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                    if (floatval($bill->NetAmount) > 1667) {
+                        return (Bills::getSurchargableAmount($bill, $billExtension) * .03) + ((Bills::getSurchargableAmount($bill, $billExtension) * .03) * .12);
+                    } else {
+                        return 56;
+                    }
+                } else {
+                    // NO SURCHARGE
+                    return 0;
+                }
+            }
+        }
+    }
     
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\API\AccountLinksController;
 use App\Http\Controllers\API\BillsController;
 use App\Http\Controllers\API\NotifiersController;
 use App\Http\Controllers\API\VerificationController;
+use App\Http\Controllers\API\ThirdPartyAPI;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,3 +59,8 @@ Route::get('get-email-from-user', [VerificationController::class, 'getEmailFromU
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', [UserController::class, 'details']);
 });
+
+/**
+ * THIRD PARTY API
+ */
+Route::get('get-bill-by-account-and-period', [ThirdPartyAPI::class, 'getBillsByAccountAndPeriod']);

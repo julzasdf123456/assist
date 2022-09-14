@@ -34,13 +34,6 @@ Route::resource('users', UsersController::class);
 Route::resource('accountMasters', AccountMasterController::class);
 
 
-
-
-
-
-
-
-
 Route::resource('accountMasters', App\Http\Controllers\AccountMasterController::class);
 
 Route::resource('accountLinks', App\Http\Controllers\AccountLinksController::class);
@@ -54,3 +47,8 @@ Route::resource('paidBills', App\Http\Controllers\PaidBillsController::class);
 Route::resource('userAppLogs', App\Http\Controllers\UserAppLogsController::class);
 
 Route::resource('notifiers', App\Http\Controllers\NotifiersController::class);
+
+Route::get('/third_party_tokens/regenerate-token/{id}', [App\Http\Controllers\ThirdPartyTokensController::class, 'regenerateToken'])->name('thirdPartyTokens.regenerate-token');
+Route::resource('thirdPartyTokens', App\Http\Controllers\ThirdPartyTokensController::class);
+
+Route::resource('billsExtensions', App\Http\Controllers\BillsExtensionController::class);

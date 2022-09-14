@@ -23,3 +23,10 @@
 </li>
 
 
+<li class="nav-item">
+    <a href="{{ route('thirdPartyTokens.index') }}"
+       class="nav-link {{ Request::is('thirdPartyTokens*') ? 'active' : '' }}">
+        <p>Third Party Tokens</p>
+    </a>
+</li>
+
