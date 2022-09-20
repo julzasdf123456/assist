@@ -64,3 +64,4 @@ Route::group(['middleware' => 'auth:api'], function(){
  * THIRD PARTY API
  */
 Route::get('get-bill-by-account-and-period', [ThirdPartyAPI::class, 'getBillsByAccountAndPeriod']);
+Route::post('transact', [ThirdPartyAPI::class, 'transact']);

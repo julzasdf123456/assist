@@ -400,26 +400,26 @@ class Bills extends Model
         }
     }
 
-    public static function getSurchargableAmount($bill, $billExtension) {
+    public static function getSurchargableAmount($bill) {
         $netAmount = $bill->NetAmount != null ? floatval($bill->NetAmount) : 0;
         $excemptions = floatval($bill->ACRM_TAFPPCA) +
                         floatval($bill->DAA_GRAM) +
                         floatval($bill->Others) +
-                        floatval($billExtension->GenerationVAT) +
-                        floatval($billExtension->TransmissionVAT) +
-                        floatval($billExtension->SLVAT) +
-                        floatval($billExtension->DistributionVAT) +
-                        floatval($billExtension->OthersVAT) +
+                        floatval($bill->GenerationVAT) +
+                        floatval($bill->TransmissionVAT) +
+                        floatval($bill->SLVAT) +
+                        floatval($bill->DistributionVAT) +
+                        floatval($bill->OthersVAT) +
                         floatval($bill->DAA_VAT)+
                         floatval($bill->ACRM_VAT)+
                         floatval($bill->FBHCAmt)+ // franchise
-                        floatval($billExtension->Item16) + // business
-                        floatval($billExtension->Item17) + // rpt
+                        floatval($bill->Item16) + // business
+                        floatval($bill->Item17) + // rpt
                         floatval($bill->PR);
         return round($netAmount - $excemptions, 2);
     }
 
-    public static function getSurcharge($bill, $billExtension) {
+    public static function getSurcharge($bill) {
         if (Bills::isNonResidential($bill->ConsumerType)) {
             // IF CS, CL, I
             if (floatval($bill->PowerKWH) > 1000) {
@@ -427,10 +427,10 @@ class Bills extends Model
                 
                 if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate . ' +30 days'))) {
                     // IF MORE THAN 30 days of due date
-                    return (Bills::getSurchargableAmount($bill, $billExtension) * .05) + ((Bills::getSurchargableAmount($bill, $billExtension) * .05) * .12);
+                    return (Bills::getSurchargableAmount($bill) * .05) + ((Bills::getSurchargableAmount($bill) * .05) * .12);
                 } else {
                     if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
-                        return (Bills::getSurchargableAmount($bill, $billExtension) * .03) + ((Bills::getSurchargableAmount($bill, $billExtension) * .03) * .12);
+                        return (Bills::getSurchargableAmount($bill) * .03) + ((Bills::getSurchargableAmount($bill) * .03) * .12);
                     } else {
                         // NO SURCHARGE
                         return 0;
@@ -439,7 +439,7 @@ class Bills extends Model
             } else {
                 // IF LESS THAN 1000 KWH
                 if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
-                    return (Bills::getSurchargableAmount($bill, $billExtension) * .03) + ((Bills::getSurchargableAmount($bill, $billExtension) * .03) * .12);
+                    return (Bills::getSurchargableAmount($bill) * .03) + ((Bills::getSurchargableAmount($bill) * .03) * .12);
                 } else {
                     // NO SURCHARGE
                     return 0;
@@ -453,7 +453,7 @@ class Bills extends Model
                 // RESIDENTIALS
                 if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
                     if (floatval($bill->NetAmount) > 1667) {
-                        return (Bills::getSurchargableAmount($bill, $billExtension) * .03) + ((Bills::getSurchargableAmount($bill, $billExtension) * .03) * .12);
+                        return (Bills::getSurchargableAmount($bill) * .03) + ((Bills::getSurchargableAmount($bill) * .03) * .12);
                     } else {
                         return 56;
                     }

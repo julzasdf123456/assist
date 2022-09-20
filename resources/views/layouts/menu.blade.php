@@ -30,3 +30,11 @@
     </a>
 </li>
 
+<li class="nav-item">
+    <a href="{{ route('thirdPartyTransactions.index') }}"
+       class="nav-link {{ Request::is('thirdPartyTransactions*') ? 'active' : '' }}">
+        <p>Third Party Transactions</p>
+    </a>
+</li>
+
+

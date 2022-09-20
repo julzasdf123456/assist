@@ -52,3 +52,5 @@ Route::get('/third_party_tokens/regenerate-token/{id}', [App\Http\Controllers\Th
 Route::resource('thirdPartyTokens', App\Http\Controllers\ThirdPartyTokensController::class);
 
 Route::resource('billsExtensions', App\Http\Controllers\BillsExtensionController::class);
+
+Route::resource('thirdPartyTransactions', App\Http\Controllers\ThirdPartyTransactionsController::class);
