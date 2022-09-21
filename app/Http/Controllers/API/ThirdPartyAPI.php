@@ -72,19 +72,27 @@ class ThirdPartyAPI extends Controller {
                         $totalAmountDue = 0;
 
                         foreach($bill as $item) {
-                            array_push($billData, [
-                                'BillNumber' => $item->BillNumber,
-                                'BillingMonth' => date('Y-m-d', strtotime($item->ServicePeriodEnd)),
-                                'DueDate' => date('Y-m-d', strtotime($item->DueDate)),
-                                'KwhUsed' => $item->PowerKWH,
-                                'SubTotal' => floatval($item->NetAmount),
-                                'Surcharge' => round(Bills::getSurcharge($item), 2),
-                                'AmountDue' => round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2),
-                            ]);
+                            $paymentChecking = ThirdPartyTransactions::where('AccountNumber', $item->AccountNumber)
+                                ->where('ServicePeriodEnd', $item->ServicePeriodEnd)
+                                ->first();
+                            
+                            if ($paymentChecking != null) {
+                                
+                            } else {
+                                array_push($billData, [
+                                    'BillNumber' => trim($item->BillNumber),
+                                    'BillingMonth' => date('Y-m-d', strtotime($item->ServicePeriodEnd)),
+                                    'DueDate' => date('Y-m-d', strtotime($item->DueDate)),
+                                    'KwhUsed' => $item->PowerKWH,
+                                    'SubTotal' => floatval($item->NetAmount),
+                                    'Surcharge' => round(Bills::getSurcharge($item), 2),
+                                    'AmountDue' => round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2),
+                                ]);
 
-                            $totalSurcharge += round(Bills::getSurcharge($item), 2);
-                            $totalSubtotal += floatval($item->NetAmount);
-                            $totalAmountDue += round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2);
+                                $totalSurcharge += round(Bills::getSurcharge($item), 2);
+                                $totalSubtotal += floatval($item->NetAmount);
+                                $totalAmountDue += round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2);
+                            }
                         }
 
                         $data['OverallSubTotal'] = round($totalSubtotal, 2);
