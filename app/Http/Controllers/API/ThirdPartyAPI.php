@@ -56,6 +56,7 @@ class ThirdPartyAPI extends Controller {
                                 'AccountMaster.ConsumerAddress',
                                 'AccountMaster.AccountStatus',
                                 'Bills.*')
+                            ->orderBy('Bills.ServicePeriodEnd')
                             ->get(); 
                             
                             
