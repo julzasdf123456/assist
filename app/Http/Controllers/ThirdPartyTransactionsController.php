@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateThirdPartyTransactionsRequest;
 use App\Repositories\ThirdPartyTransactionsRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\ThirdPartyTransactions;
 use Flash;
 use Response;
 
@@ -30,10 +31,11 @@ class ThirdPartyTransactionsController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $thirdPartyTransactions = $this->thirdPartyTransactionsRepository->all();
+        $thirdPartyTransactions = ThirdPartyTransactions::orderByDesc('created_at')->get();
 
-        return view('third_party_transactions.index')
-            ->with('thirdPartyTransactions', $thirdPartyTransactions);
+        return view('third_party_transactions.index', [
+            'thirdPartyTransactions' => $thirdPartyTransactions
+        ]);
     }
 
     /**
