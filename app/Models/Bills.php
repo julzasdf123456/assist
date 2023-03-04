@@ -419,7 +419,7 @@ class Bills extends Model
         return round($netAmount - $excemptions, 2);
     }
 
-    public static function getSurcharge($bill) {
+    public static function computeSurcharge($bill) {
         if (Bills::isNonResidential($bill->ConsumerType)) {
             // IF CS, CL, I
             if (floatval($bill->PowerKWH) > 1000) {
@@ -465,4 +465,17 @@ class Bills extends Model
         }
     }
     
+    public static function getSurcharge($bill) {
+        $surcharge = computeSurcharge($bill);
+
+        if ($surcharge == 0) {
+            return 0;
+        } else {
+            if ($surcharge < 56) {
+                return 56;
+            } else {
+                return $surcharge;
+            }
+        }
+    }
 }
