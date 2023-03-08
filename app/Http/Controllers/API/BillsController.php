@@ -16,8 +16,6 @@ class BillsController extends Controller
     public $successStatus = 200;
 
     public function getLatestBills(Request $request) {
-<<<<<<< HEAD
-=======
         $bills = DB::connection('sqlsrv2')
                     ->table('Bills')
                     ->leftJoin('BillsExtension', function($join) {
@@ -174,202 +172,10 @@ class BillsController extends Controller
      * q = Bill Number
      */
     public function getBillDetails(Request $request) {
->>>>>>> b4175c9164997c21ed747e22cb0b5654ff906665
         $bill = DB::connection('sqlsrv2')
                     ->table('Bills')
-                    ->leftJoin('AccountMaster', 'Bills.AccountNumber', '=', 'AccountMaster.AccountNumber')
-                    ->leftJoin('BillsExtension', function($join) {
-                        $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
-                            ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
-                    })
-                    ->leftJoin('PaidBills', 'Bills.BillNumber', '=', 'PaidBills.BillNumber')
-                    ->where('AccountMaster.AccountNumber', $request['q'])
-                    ->orderByDesc('Bills.ServicePeriodEnd')
-                    ->select('AccountMaster.ConsumerName',
-                            'AccountMaster.ConsumerAddress',
-                            'AccountMaster.AccountStatus',
-                            'Bills.ServicePeriodEnd',
-                            'Bills.AccountNumber',
-                            'Bills.BillNumber',
-                            'Bills.ConsumerType',
-                            'Bills.NetAmount',
-                            'Bills.DueDate',
-                            'Bills.ServiceDateFrom',
-                            'Bills.ServiceDateTo',
-                            'Bills.PowerPreviousReading',
-                            'Bills.PowerPresentReading',
-                            'Bills.PowerKWH',
-                            'Bills.GenerationSystemAmt',
-                            'Bills.TransmissionSystemAmt',
-                            'Bills.SystemLossAmt',
-                            'Bills.DistributionSystemAmt',
-                            'Bills.DistributionDemandAmt',
-                            'Bills.SupplySystemAmt as RetailElectricServiceAmount',
-                            'Bills.SupplyRetailCustomerAmt as RetailElectricServiceAmountKW',
-                            'Bills.MeteringSystemAmt',
-                            'Bills.MeteringRetailCustomerAmt',
-                            'Bills.MissionaryElectrificationAmt',
-                            'Bills.FPCAAdjustmentAmt as NPCStraindedDebtsAmount',
-                            'Bills.ForexAdjustmentAmt as NPCStrandedCostAmount',
-                            'Bills.EnvironmentalAmt',
-                            'Bills.ACRM_TAFPPCA',
-                            'Bills.ACRM_TAFxA',
-                            'Bills.DAA_GRAM',
-                            'Bills.DAA_ICERA',
-                            'Bills.FBHCAmt as FranchiseTaxAmount',
-                            'Bills.LifelineSubsidyAmt',
-                            'Bills.Item4 as FitAllAmount',
-                            'Bills.Others as OtherChargesAmount',
-                            'Bills.DAA_VAT as DaaVatAmount',
-                            'Bills.ACRM_VAT as AcrmVatAmount',
-                            'Bills.PR as TransformerRental',
-                            'Bills.SeniorCitizenSubsidy',
-                            'Bills.Remarks as SubscriberNo',
-                            'BillsExtension.GenerationVAT',
-                            'BillsExtension.TransmissionVAT',
-                            'BillsExtension.SLVAT',
-                            'BillsExtension.DistributionVAT',
-                            'BillsExtension.OthersVAT',
-                            'BillsExtension.Item5',
-                            'BillsExtension.Item6',
-                            'BillsExtension.Item7',
-                            'BillsExtension.Item8',
-                            'BillsExtension.Item9',
-                            'BillsExtension.Item10',
-                            'BillsExtension.Item11',
-                            'BillsExtension.Item12',
-                            'BillsExtension.Item13',
-                            'BillsExtension.Item14',
-                            'BillsExtension.Item15',
-                            'BillsExtension.Item16',
-                            'BillsExtension.Item17',
-                            'BillsExtension.Item18',
-                            'BillsExtension.Item19',
-                            'BillsExtension.Item20',
-                            'BillsExtension.Item21',
-                            'BillsExtension.Item22',
-                            'BillsExtension.Item23',
-                            'BillsExtension.Item24',
-                            'PaidBills.NetAmount as NetAmountPaid')
-                    ->take(5)
-                    ->get();
-
-        $data = [];
-        foreach($bill as $item) {
-            array_push($data, [
-                'ConsumerName' => $item->ConsumerName,
-                'ConsumerAddress' => $item->ConsumerAddress,
-                'AccountStatus' => $item->AccountStatus,
-                'ServicePeriodEnd' => $item->ServicePeriodEnd,
-                'AccountNumber' => $item->AccountNumber,
-                'BillNumber' => $item->BillNumber,
-                'ConsumerType' => $item->ConsumerType,
-                'NetAmount' => $item->NetAmount,
-                'DueDate' => $item->DueDate,
-                'ServiceDateFrom' => $item->ServiceDateFrom,
-                'ServiceDateTo' => $item->ServiceDateTo,
-                'PowerPreviousReading' => $item->PowerPreviousReading,
-                'PowerPresentReading' => $item->PowerPresentReading,
-                'PowerKWH' => $item->PowerKWH,
-                'GenerationSystemAmt' => $item->GenerationSystemAmt,
-                'TransmissionSystemAmt' => $item->TransmissionSystemAmt,
-                'SystemLossAmt' => $item->SystemLossAmt,
-                'DistributionSystemAmt' => $item->DistributionSystemAmt,
-                'DistributionDemandAmt' => $item->DistributionDemandAmt,
-                'RetailElectricServiceAmount' => $item->RetailElectricServiceAmount,
-                'RetailElectricServiceAmountKW' => $item->RetailElectricServiceAmountKW,
-                'MeteringSystemAmt' => $item->MeteringSystemAmt,
-                'MeteringRetailCustomerAmt' => $item->MeteringRetailCustomerAmt,
-                'MissionaryElectrificationAmt' => $item->MissionaryElectrificationAmt,
-                'NPCStraindedDebtsAmount' => $item->NPCStraindedDebtsAmount,
-                'NPCStrandedCostAmount' => $item->NPCStrandedCostAmount,
-                'EnvironmentalAmt' => $item->EnvironmentalAmt,
-                'ACRM_TAFPPCA' => $item->ACRM_TAFPPCA,
-                'ACRM_TAFxA' => $item->ACRM_TAFxA,
-                'DAA_GRAM' => $item->DAA_GRAM,
-                'DAA_ICERA' => $item->DAA_ICERA,
-                'FranchiseTaxAmount' => $item->FranchiseTaxAmount,
-                'LifelineSubsidyAmt' => $item->LifelineSubsidyAmt,
-                'FitAllAmount' => $item->FitAllAmount,
-                'OtherChargesAmount' => $item->OtherChargesAmount,
-                'DaaVatAmount' => $item->DaaVatAmount,
-                'AcrmVatAmount' => $item->AcrmVatAmount,
-                'TransformerRental' => $item->TransformerRental,
-                'SeniorCitizenSubsidy' => $item->SeniorCitizenSubsidy,
-                'SubscriberNo' => $item->SubscriberNo,
-                'GenerationVAT' => $item->GenerationVAT,
-                'TransmissionVAT' => $item->TransmissionVAT,
-                'SLVAT' => $item->SLVAT,
-                'DistributionVAT' => $item->DistributionVAT,
-                'OthersVAT' => $item->OthersVAT,
-                'Item5' => $item->Item5,
-                'Item6' => $item->Item6,
-                'Item7' => $item->Item7,
-                'Item8' => $item->Item8,
-                'Item9' => $item->Item9,
-                'Item10' => $item->Item10,
-                'Item11' => $item->Item11,
-                'Item12' => $item->Item12,
-                'Item13' => $item->Item13,
-                'Item14' => $item->Item14,
-                'Item15' => $item->Item15,
-                'Item16' => $item->Item16,
-                'Item17' => $item->Item17,
-                'Item18' => $item->Item18,
-                'Item19' => $item->Item19,
-                'Item20' => $item->Item20,
-                'Item21' => $item->Item21,
-                'Item22' => $item->Item22,
-                'Item23' => $item->Item23,
-                'Item24' => $item->Item24,
-                'NetAmountPaid' => $item->NetAmountPaid,
-                'Surcharges' => Bills::getSurcharge($item)
-            ]);
-        }
-
-        if ($bill == null) {
-            return response()->json(['error' => 'No bills found'], 404);
-        } else {
-            return response()->json($data, $this-> successStatus); 
-        }
-    }
-
-    public function getUnpaidBills(Request $request) {
-        $bills = DB::connection('sqlsrv2')
-                    ->table('Bills')
-                    ->leftJoin('PaidBills', 'Bills.BillNumber', '=', 'PaidBills.BillNumber')
-                    ->select('Bills.BillNumber', 'Bills.ServicePeriodEnd', 'Bills.PowerKWH', 'Bills.NetAmount', 'PaidBills.NetAmount as NetAmountPaid')
-                    ->where('Bills.AccountNumber', $request['q'])
-                    ->whereNull('PaidBills.NetAmount')
-                    ->orderByDesc('Bills.ServicePeriodEnd')
-                    ->take(20)
-                    ->get();
-
-        if ($bills == null) {
-            return response()->json(['error' => 'No bills found'], 404);
-        } else {
-            return response()->json($bills, $this-> successStatus); 
-        }
-    }
-
-    /**
-     * GET FULL BILL DETAILS
-     * @Params
-     * q = Bill Number
-     */
-    public function getBillDetails(Request $request) {
-        $bill = DB::connection('sqlsrv2')
-                    ->table('Bills')
-                    ->leftJoin('AccountMaster', 'Bills.AccountNumber', '=', 'AccountMaster.AccountNumber')
-                    ->leftJoin('BillsExtension', function($join) {
-                        $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
-                            ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
-                    })
                     ->where('Bills.BillNumber', $request['q'])
-                    ->select('AccountMaster.ConsumerName',
-                            'AccountMaster.ConsumerAddress',
-                            'AccountMaster.AccountStatus',
-                            'Bills.ServicePeriodEnd',
+                    ->select('Bills.ServicePeriodEnd',
                             'Bills.AccountNumber',
                             'Bills.BillNumber',
                             'Bills.ConsumerType',
@@ -405,61 +211,31 @@ class BillsController extends Controller
                             'Bills.ACRM_VAT as AcrmVatAmount',
                             'Bills.PR as TransformerRental',
                             'Bills.SeniorCitizenSubsidy',
-                            'Bills.Remarks as SubscriberNo',
-                            'BillsExtension.GenerationVAT',
-                            'BillsExtension.TransmissionVAT',
-                            'BillsExtension.SLVAT',
-                            'BillsExtension.DistributionVAT',
-                            'BillsExtension.OthersVAT',
-                            'BillsExtension.Item5',
-                            'BillsExtension.Item6',
-                            'BillsExtension.Item7',
-                            'BillsExtension.Item8',
-                            'BillsExtension.Item9',
-                            'BillsExtension.Item10',
-                            'BillsExtension.Item11',
-                            'BillsExtension.Item12',
-                            'BillsExtension.Item13',
-                            'BillsExtension.Item14',
-                            'BillsExtension.Item15',
-                            'BillsExtension.Item16',
-                            'BillsExtension.Item17',
-                            'BillsExtension.Item18',
-                            'BillsExtension.Item19',
-                            'BillsExtension.Item20',
-                            'BillsExtension.Item21',
-                            'BillsExtension.Item22',
-                            'BillsExtension.Item23',
-                            'BillsExtension.Item24',
-                            'Bills.ServicePeriodEnd',)
+                            'Bills.Remarks as SubscriberNo',)
                     ->first();
 
         if ($bill == null) {
             return response()->json(['error' => 'No bill found'], 404);
         } else {
-            // $billsExtension = DB::connection('sqlsrv2')
-            //         ->table('BillsExtension')
-            //         ->where('AccountNumber', $bill->AccountNumber)
-            //         ->where('ServicePeriodEnd', $bill->ServicePeriodEnd)
-            //         ->select('BillsExtension.Item18 as OtherGenerationAdj',
-            //             'BillsExtension.Item19 as OtherTransmissionAdj',
-            //             'BillsExtension.Item20 as OtherSystemLossAdj',
-            //             'BillsExtension.Item16 as BusinessTaxAmount',
-            //             'BillsExtension.Item17 as RealPropertyTaxAmount',
-            //             'BillsExtension.Item21 as OtherLifelineAmount',
-            //             'BillsExtension.Item10 as RFSCAmount',
-            //             'BillsExtension.Item22 as OtherSeniorAdjAmount',
-            //             'BillsExtension.GenerationVAT',
-            //             'BillsExtension.TransmissionVAT',
-            //             'BillsExtension.SLVAT as SystemsLossVat',
-            //             'BillsExtension.DistributionVAT',
-            //             'BillsExtension.OthersVAT',
-            //             'BillsExtension.Item5 as MandatoryReducAmount',)
-            //         ->first();
-
-            $surcharge = [
-                'Surcharges' => Bills::getSurcharge($bill),
-            ];
+            $billsExtension = DB::connection('sqlsrv2')
+                    ->table('BillsExtension')
+                    ->where('AccountNumber', $bill->AccountNumber)
+                    ->where('ServicePeriodEnd', $bill->ServicePeriodEnd)
+                    ->select('BillsExtension.Item18 as OtherGenerationAdj',
+                        'BillsExtension.Item19 as OtherTransmissionAdj',
+                        'BillsExtension.Item20 as OtherSystemLossAdj',
+                        'BillsExtension.Item16 as BusinessTaxAmount',
+                        'BillsExtension.Item17 as RealPropertyTaxAmount',
+                        'BillsExtension.Item21 as OtherLifelineAmount',
+                        'BillsExtension.Item10 as RFSCAmount',
+                        'BillsExtension.Item22 as OtherSeniorAdjAmount',
+                        'BillsExtension.GenerationVAT',
+                        'BillsExtension.TransmissionVAT',
+                        'BillsExtension.SLVAT as SystemsLossVat',
+                        'BillsExtension.DistributionVAT',
+                        'BillsExtension.OthersVAT',
+                        'BillsExtension.Item5 as MandatoryReducAmount',)
+                    ->first();
 
             $rates = DB::connection('sqlsrv2')
                     ->table('UnbundledRates')
@@ -518,7 +294,7 @@ class BillsController extends Controller
             $log->Details = "Queried bill with bill number " . $bill->BillNumber;
             $log->save();
 
-            return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension, (array)$surcharge), $this-> successStatus); 
+            return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension,  (array)$billsExtension), $this-> successStatus); 
         }
     }
 
