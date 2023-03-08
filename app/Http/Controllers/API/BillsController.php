@@ -153,7 +153,7 @@ class BillsController extends Controller
                 'Item21' => $item->Item21,
                 'Item22' => $item->Item22,
                 'Item23' => $item->Item23,
-                'Item24' => $item->Item2,
+                'Item24' => $item->Item24,
                 'Surcharges' => Bills::getSurchargeMobApp($item),
             ]);
             
