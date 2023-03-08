@@ -261,7 +261,6 @@ class BillsController extends Controller
                 'AccountNumber' => $item->AccountNumber,
                 'BillNumber' => $item->BillNumber,
                 'ConsumerType' => $item->ConsumerType,
-                'NetAmount' => $item->NetAmount,
                 'DueDate' => $item->DueDate,
                 'ServiceDateFrom' => $item->ServiceDateFrom,
                 'ServiceDateTo' => $item->ServiceDateTo,
@@ -321,6 +320,7 @@ class BillsController extends Controller
                 'Item24' => $item->Item24,
                 'NetAmountPaid' => $item->NetAmountPaid,
                 'Surcharges' => Bills::getSurchargeMobApp($item),
+                'NetAmount' => round(floatval($item->NetAmount) + floatval(Bills::getSurchargeMobApp($item)), 2),
             ]);
             
         }
