@@ -483,9 +483,69 @@ class Bills extends Model
             }
         }
     }
+
+    public static function computeSurchargeMobApp($bill) {
+        if (Bills::isNonResidential($bill->ConsumerType)) {
+            // IF CS, CL, I
+            if (floatval($bill->PowerKWH) > 1000) {
+                // IF MORE THAN 1000 KWH
+                
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate . ' +30 days'))) {
+                    // IF MORE THAN 30 days of due date
+                    return (Bills::getSurchargableAmountMobApp($bill) * .05) + ((Bills::getSurchargableAmountMobApp($bill) * .05) * .12);
+                } else {
+                    if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                        return (Bills::getSurchargableAmountMobApp($bill) * .03) + ((Bills::getSurchargableAmountMobApp($bill) * .03) * .12);
+                    } else {
+                        // NO SURCHARGE
+                        return 0;
+                    }
+                }
+            } else {
+                // IF LESS THAN 1000 KWH
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                    return (Bills::getSurchargableAmountMobApp($bill) * .03) + ((Bills::getSurchargableAmountMobApp($bill) * .03) * .12);
+                } else {
+                    // NO SURCHARGE
+                    return 0;
+                }
+            }
+        } else {
+            if ($bill->ConsumerType == 'P') {
+                // IF PUBLIC BUILDING, NO SURCHARGE
+                return 0;
+            } else {
+                // RESIDENTIALS
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                    if (floatval($bill->NetAmount) > 1667) {
+                        return (Bills::getSurchargableAmountMobApp($bill) * .03) + ((Bills::getSurchargableAmountMobApp($bill) * .03) * .12);
+                    } else {
+                        return 56;
+                    }
+                } else {
+                    // NO SURCHARGE
+                    return 0;
+                }
+            }
+        }
+    }
     
     public static function getSurcharge($bill) {
         $surcharge = computeSurcharge($bill);
+
+        if ($surcharge == 0) {
+            return 0;
+        } else {
+            if ($surcharge < 56) {
+                return 56;
+            } else {
+                return $surcharge;
+            }
+        }
+    }
+
+    public static function getSurchargeMobApp($bill) {
+        $surcharge = computeSurchargeMobApp($bill);
 
         if ($surcharge == 0) {
             return 0;
