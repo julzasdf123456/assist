@@ -248,6 +248,7 @@ class BillsController extends Controller
                             'BillsExtension.Item24',
                             'PaidBills.NetAmount As NetAmountPaid')
                         ->where('Bills.AccountNumber', $request['q'])
+                        ->take(5)
                         ->get();
 
        
