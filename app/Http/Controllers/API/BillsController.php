@@ -174,6 +174,10 @@ class BillsController extends Controller
     public function getBillDetails(Request $request) {
         $bill = DB::connection('sqlsrv2')
                     ->table('Bills')
+                    ->leftJoin('BillsExtension', function($join) {
+                        $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
+                            ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
+                    })
                     ->where('Bills.BillNumber', $request['q'])
                     ->select('Bills.ServicePeriodEnd',
                             'Bills.AccountNumber',
@@ -211,32 +215,37 @@ class BillsController extends Controller
                             'Bills.ACRM_VAT as AcrmVatAmount',
                             'Bills.PR as TransformerRental',
                             'Bills.SeniorCitizenSubsidy',
-                            'Bills.Remarks as SubscriberNo',)
+                            'Bills.Remarks as SubscriberNo',
+                            'BillsExtension.GenerationVAT',
+                            'BillsExtension.TransmissionVAT',
+                            'BillsExtension.SLVAT',
+                            'BillsExtension.DistributionVAT',
+                            'BillsExtension.OthersVAT',
+                            'BillsExtension.Item5',
+                            'BillsExtension.Item6',
+                            'BillsExtension.Item7',
+                            'BillsExtension.Item8',
+                            'BillsExtension.Item9',
+                            'BillsExtension.Item10',
+                            'BillsExtension.Item11',
+                            'BillsExtension.Item12',
+                            'BillsExtension.Item13',
+                            'BillsExtension.Item14',
+                            'BillsExtension.Item15',
+                            'BillsExtension.Item16',
+                            'BillsExtension.Item17',
+                            'BillsExtension.Item18',
+                            'BillsExtension.Item19',
+                            'BillsExtension.Item20',
+                            'BillsExtension.Item21',
+                            'BillsExtension.Item22',
+                            'BillsExtension.Item23',
+                            'BillsExtension.Item24',)
                     ->first();
 
         if ($bill == null) {
             return response()->json(['error' => 'No bill found'], 404);
         } else {
-            $billsExtension = DB::connection('sqlsrv2')
-                    ->table('BillsExtension')
-                    ->where('AccountNumber', $bill->AccountNumber)
-                    ->where('ServicePeriodEnd', $bill->ServicePeriodEnd)
-                    ->select('BillsExtension.Item18 as OtherGenerationAdj',
-                        'BillsExtension.Item19 as OtherTransmissionAdj',
-                        'BillsExtension.Item20 as OtherSystemLossAdj',
-                        'BillsExtension.Item16 as BusinessTaxAmount',
-                        'BillsExtension.Item17 as RealPropertyTaxAmount',
-                        'BillsExtension.Item21 as OtherLifelineAmount',
-                        'BillsExtension.Item10 as RFSCAmount',
-                        'BillsExtension.Item22 as OtherSeniorAdjAmount',
-                        'BillsExtension.GenerationVAT',
-                        'BillsExtension.TransmissionVAT',
-                        'BillsExtension.SLVAT as SystemsLossVat',
-                        'BillsExtension.DistributionVAT',
-                        'BillsExtension.OthersVAT',
-                        'BillsExtension.Item5 as MandatoryReducAmount',)
-                    ->first();
-
             $rates = DB::connection('sqlsrv2')
                     ->table('UnbundledRates')
                     ->where('ConsumerType', $bill->ConsumerType)
@@ -287,6 +296,10 @@ class BillsController extends Controller
                         'UnbundledRatesExtension.Item5 as MandatoryReducRate',)
                     ->first();
 
+            $surcharge = [
+                'Surcharges' => Bills::getSurcharge($bill),
+            ];
+
             // REGISTER LOG
             $log = new UserAppLogs;
             $log->UserId = $request['u'];
@@ -294,7 +307,7 @@ class BillsController extends Controller
             $log->Details = "Queried bill with bill number " . $bill->BillNumber;
             $log->save();
 
-            return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension,  (array)$billsExtension), $this-> successStatus); 
+            return response()->json((object)array_merge((array)$bill, (array)$rates, (array)$ratesExtension,  (array)$surcharge), $this-> successStatus); 
         }
     }
 
