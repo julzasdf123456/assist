@@ -175,19 +175,157 @@ class BillsController extends Controller
 
     public function getUnpaidBills(Request $request) {
         $bills = DB::connection('sqlsrv2')
-                    ->table('Bills')
-                    ->leftJoin('PaidBills', 'Bills.BillNumber', '=', 'PaidBills.BillNumber')
-                    ->select('Bills.BillNumber', 'Bills.ServicePeriodEnd', 'Bills.PowerKWH', 'Bills.NetAmount', 'PaidBills.NetAmount as NetAmountPaid')
-                    ->where('Bills.AccountNumber', $request['q'])
-                    ->whereNull('PaidBills.NetAmount')
-                    ->orderByDesc('Bills.ServicePeriodEnd')
-                    ->take(5)
-                    ->get();
+                ->table('Bills')
+                ->leftJoin('BillsExtension', function($join) {
+                    $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
+                        ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
+                })
+                ->leftJoin('PaidBills', function($join) {
+                    $join->on('Bills.AccountNumber', '=', 'PaidBills.AccountNumber')
+                        ->on('Bills.ServicePeriodEnd', '=', 'PaidBills.ServicePeriodEnd');
+                })
+                ->select('Bills.ServicePeriodEnd',
+                            'Bills.AccountNumber',
+                            'Bills.BillNumber',
+                            'Bills.ConsumerType',
+                            'Bills.NetAmount',
+                            'Bills.DueDate',
+                            'Bills.ServiceDateFrom',
+                            'Bills.ServiceDateTo',
+                            'Bills.PowerPreviousReading',
+                            'Bills.PowerPresentReading',
+                            'Bills.PowerKWH',
+                            'Bills.GenerationSystemAmt',
+                            'Bills.TransmissionSystemAmt',
+                            'Bills.SystemLossAmt',
+                            'Bills.DistributionSystemAmt',
+                            'Bills.DistributionDemandAmt',
+                            'Bills.SupplySystemAmt as RetailElectricServiceAmount',
+                            'Bills.SupplyRetailCustomerAmt as RetailElectricServiceAmountKW',
+                            'Bills.MeteringSystemAmt',
+                            'Bills.MeteringRetailCustomerAmt',
+                            'Bills.MissionaryElectrificationAmt',
+                            'Bills.FPCAAdjustmentAmt as NPCStraindedDebtsAmount',
+                            'Bills.ForexAdjustmentAmt as NPCStrandedCostAmount',
+                            'Bills.EnvironmentalAmt',
+                            'Bills.ACRM_TAFPPCA',
+                            'Bills.ACRM_TAFxA',
+                            'Bills.DAA_GRAM',
+                            'Bills.DAA_ICERA',
+                            'Bills.FBHCAmt as FranchiseTaxAmount',
+                            'Bills.LifelineSubsidyAmt',
+                            'Bills.Item4 as FitAllAmount',
+                            'Bills.Others as OtherChargesAmount',
+                            'Bills.DAA_VAT as DaaVatAmount',
+                            'Bills.ACRM_VAT as AcrmVatAmount',
+                            'Bills.PR as TransformerRental',
+                            'Bills.SeniorCitizenSubsidy',
+                            'Bills.Remarks as SubscriberNo',
+                            'BillsExtension.GenerationVAT',
+                            'BillsExtension.TransmissionVAT',
+                            'BillsExtension.SLVAT',
+                            'BillsExtension.DistributionVAT',
+                            'BillsExtension.OthersVAT',
+                            'BillsExtension.Item5',
+                            'BillsExtension.Item6',
+                            'BillsExtension.Item7',
+                            'BillsExtension.Item8',
+                            'BillsExtension.Item9',
+                            'BillsExtension.Item10',
+                            'BillsExtension.Item11',
+                            'BillsExtension.Item12',
+                            'BillsExtension.Item13',
+                            'BillsExtension.Item14',
+                            'BillsExtension.Item15',
+                            'BillsExtension.Item16',
+                            'BillsExtension.Item17',
+                            'BillsExtension.Item18',
+                            'BillsExtension.Item19',
+                            'BillsExtension.Item20',
+                            'BillsExtension.Item21',
+                            'BillsExtension.Item22',
+                            'BillsExtension.Item23',
+                            'BillsExtension.Item24',
+                            'PaidBills.NetAmount As NetAmountPaid')
+                        ->where('Bills.AccountNumber', $request['q'])
+                        ->get();
+
+       
+        $data = [];
+        foreach($bills as $item) {
+            array_push($data, [
+                'ServicePeriodEnd' => $item->ServicePeriodEnd,
+                'AccountNumber' => $item->AccountNumber,
+                'BillNumber' => $item->BillNumber,
+                'ConsumerType' => $item->ConsumerType,
+                'NetAmount' => $item->NetAmount,
+                'DueDate' => $item->DueDate,
+                'ServiceDateFrom' => $item->ServiceDateFrom,
+                'ServiceDateTo' => $item->ServiceDateTo,
+                'PowerPreviousReading' => $item->PowerPreviousReading,
+                'PowerPresentReading' => $item->PowerPresentReading,
+                'PowerKWH' => $item->PowerKWH,
+                'GenerationSystemAmt' => $item->GenerationSystemAmt,
+                'TransmissionSystemAmt' => $item->TransmissionSystemAmt,
+                'SystemLossAmt' => $item->SystemLossAmt,
+                'DistributionSystemAmt' => $item->DistributionSystemAmt,
+                'DistributionDemandAmt' => $item->DistributionDemandAmt,
+                'RetailElectricServiceAmount' => $item->RetailElectricServiceAmount,
+                'RetailElectricServiceAmountKW' => $item->RetailElectricServiceAmountKW,
+                'MeteringSystemAmt' => $item->MeteringSystemAmt,
+                'MeteringRetailCustomerAmt' => $item->MeteringRetailCustomerAmt,
+                'MissionaryElectrificationAmt' => $item->MissionaryElectrificationAmt,
+                'NPCStraindedDebtsAmount' => $item->NPCStraindedDebtsAmount,
+                'NPCStrandedCostAmount' => $item->NPCStrandedCostAmount,
+                'EnvironmentalAmt' => $item->EnvironmentalAmt,
+                'ACRM_TAFPPCA' => $item->ACRM_TAFPPCA,
+                'ACRM_TAFxA' => $item->ACRM_TAFxA,
+                'DAA_GRAM' => $item->DAA_GRAM,
+                'DAA_ICERA' => $item->DAA_ICERA,
+                'FranchiseTaxAmount' => $item->FranchiseTaxAmount,
+                'LifelineSubsidyAmt' => $item->LifelineSubsidyAmt,
+                'FitAllAmount' => $item->FitAllAmount,
+                'OtherChargesAmount' => $item->OtherChargesAmount,
+                'DaaVatAmount' => $item->DaaVatAmount,
+                'AcrmVatAmount' => $item->AcrmVatAmount,
+                'TransformerRental' => $item->TransformerRental,
+                'SeniorCitizenSubsidy' => $item->SeniorCitizenSubsidy,
+                'SubscriberNo' => $item->SubscriberNo,
+                'GenerationVAT' => $item->GenerationVAT,
+                'TransmissionVAT' => $item->TransmissionVAT,
+                'SLVAT' => $item->SLVAT,
+                'DistributionVAT' => $item->DistributionVAT,
+                'OthersVAT' => $item->OthersVAT,
+                'Item5' => $item->Item5,
+                'Item6' => $item->Item6,
+                'Item7' => $item->Item7,
+                'Item8' => $item->Item8,
+                'Item9' => $item->Item9,
+                'Item10' => $item->Item10,
+                'Item11' => $item->Item11,
+                'Item12' => $item->Item12,
+                'Item13' => $item->Item13,
+                'Item14' => $item->Item14,
+                'Item15' => $item->Item15,
+                'Item16' => $item->Item16,
+                'Item17' => $item->Item17,
+                'Item18' => $item->Item18,
+                'Item19' => $item->Item19,
+                'Item20' => $item->Item20,
+                'Item21' => $item->Item21,
+                'Item22' => $item->Item22,
+                'Item23' => $item->Item23,
+                'Item24' => $item->Item24,
+                'NetAmountPaid' => $item->NetAmountPaid,
+                'Surcharges' => Bills::getSurchargeMobApp($item),
+            ]);
+            
+        }
 
         if ($bills == null) {
             return response()->json(['error' => 'No bills found'], 404);
         } else {
-            return response()->json($bills, $this-> successStatus); 
+            return response()->json($data, $this-> successStatus); 
         }
     }
 
