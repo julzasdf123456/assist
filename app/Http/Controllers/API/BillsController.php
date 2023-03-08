@@ -93,7 +93,7 @@ class BillsController extends Controller
             return response()->json(['error' => 'No bills found'], 404);
         } else {
             $surcharge = [
-                'Surcharges' => Bills::getSurcharge($bills),
+                'Surcharges' => Bills::getSurchargeMobApp($bills),
             ];
 
             return response()->json((object)array_merge((array)$bills, (array)$surcharge), $this-> successStatus); 
