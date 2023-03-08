@@ -22,7 +22,6 @@ class BillsController extends Controller
                         $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
                             ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
                     })
-                    ->where('Bills.AccountNumber', $request['q'])
                     ->select('Bills.ServicePeriodEnd',
                             'Bills.AccountNumber',
                             'Bills.BillNumber',
@@ -85,9 +84,10 @@ class BillsController extends Controller
                             'BillsExtension.Item22',
                             'BillsExtension.Item23',
                             'BillsExtension.Item24',)
-                    ->orderByDesc('Bills.ServicePeriodEnd')
-                    ->take(5)
-                    ->get();
+                        ->where('Bills.AccountNumber', $request['q'])
+                        ->orderByDesc('Bills.ServicePeriodEnd')
+                        ->take(5)
+                        ->get();
 
         if ($bills == null) {
             return response()->json(['error' => 'No bills found'], 404);
