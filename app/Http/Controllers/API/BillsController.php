@@ -22,6 +22,10 @@ class BillsController extends Controller
                         $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
                             ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
                     })
+                    ->leftJoin('PaidBills', function($join) {
+                        $join->on('Bills.AccountNumber', '=', 'PaidBills.AccountNumber')
+                            ->on('Bills.ServicePeriodEnd', '=', 'PaidBills.ServicePeriodEnd');
+                    })
                     ->select('Bills.ServicePeriodEnd',
                             'Bills.AccountNumber',
                             'Bills.BillNumber',
@@ -83,7 +87,8 @@ class BillsController extends Controller
                             'BillsExtension.Item21',
                             'BillsExtension.Item22',
                             'BillsExtension.Item23',
-                            'BillsExtension.Item24',)
+                            'BillsExtension.Item24',
+                            'PaidBills.NetAmount As NetAmountPaid')
                         ->where('Bills.AccountNumber', $request['q'])
                         ->orderByDesc('Bills.ServicePeriodEnd')
                         ->take(5)
@@ -154,6 +159,7 @@ class BillsController extends Controller
                 'Item22' => $item->Item22,
                 'Item23' => $item->Item23,
                 'Item24' => $item->Item24,
+                'NetAmountPaid' => $item->NetAmountPaid,
                 'Surcharges' => Bills::getSurchargeMobApp($item),
             ]);
             
