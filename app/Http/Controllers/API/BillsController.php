@@ -144,7 +144,11 @@ class BillsController extends Controller
         if ($bills == null) {
             return response()->json(['error' => 'No bills found'], 404);
         } else {
-            return response()->json($bills, $this-> successStatus); 
+            $surcharge = [
+                'Surcharges' => Bills::getSurcharge($bills),
+            ];
+
+            return response()->json((object)array_merge((array)$bills, (array)$surcharge), $this-> successStatus); 
         }
     }
 
