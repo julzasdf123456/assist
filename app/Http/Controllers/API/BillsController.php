@@ -89,14 +89,81 @@ class BillsController extends Controller
                         ->take(5)
                         ->get();
 
+        $data = [];
+        foreach($bills as $item) {
+            array_push($data, [
+                'ServicePeriodEnd' => $item->ServicePeriodEnd,
+                'AccountNumber' => $item->AccountNumber,
+                'BillNumber' => $item->BillNumber,
+                'ConsumerType' => $item->ConsumerType,
+                'NetAmount' => $item->NetAmount,
+                'DueDate' => $item->DueDate,
+                'ServiceDateFrom' => $item->ServiceDateFrom,
+                'ServiceDateTo' => $item->ServiceDateTo,
+                'PowerPreviousReading' => $item->PowerPreviousReading,
+                'PowerPresentReading' => $item->PowerPresentReading,
+                'PowerKWH' => $item->PowerKWH,
+                'GenerationSystemAmt' => $item->GenerationSystemAmt,
+                'TransmissionSystemAmt' => $item->TransmissionSystemAmt,
+                'SystemLossAmt' => $item->SystemLossAmt,
+                'DistributionSystemAmt' => $item->DistributionSystemAmt,
+                'DistributionDemandAmt' => $item->DistributionDemandAmt,
+                'RetailElectricServiceAmount' => $item->RetailElectricServiceAmount,
+                'RetailElectricServiceAmountKW' => $item->RetailElectricServiceAmountKW,
+                'MeteringSystemAmt' => $item->MeteringSystemAmt,
+                'MeteringRetailCustomerAmt' => $item->MeteringRetailCustomerAmt,
+                'MissionaryElectrificationAmt' => $item->MissionaryElectrificationAmt,
+                'NPCStraindedDebtsAmount' => $item->NPCStraindedDebtsAmount,
+                'NPCStrandedCostAmount' => $item->NPCStrandedCostAmount,
+                'EnvironmentalAmt' => $item->EnvironmentalAmt,
+                'ACRM_TAFPPCA' => $item->ACRM_TAFPPCA,
+                'ACRM_TAFxA' => $item->ACRM_TAFxA,
+                'DAA_GRAM' => $item->DAA_GRAM,
+                'DAA_ICERA' => $item->DAA_ICERA,
+                'FranchiseTaxAmount' => $item->FranchiseTaxAmount,
+                'LifelineSubsidyAmt' => $item->LifelineSubsidyAmt,
+                'FitAllAmount' => $item->FitAllAmount,
+                'OtherChargesAmount' => $item->OtherChargesAmount,
+                'DaaVatAmount' => $item->DaaVatAmount,
+                'AcrmVatAmount' => $item->AcrmVatAmount,
+                'TransformerRental' => $item->TransformerRental,
+                'SeniorCitizenSubsidy' => $item->SeniorCitizenSubsidy,
+                'SubscriberNo' => $item->SubscriberNo,
+                'GenerationVAT' => $item->GenerationVAT,
+                'TransmissionVAT' => $item->TransmissionVAT,
+                'SLVAT' => $item->SLVAT,
+                'DistributionVAT' => $item->DistributionVAT,
+                'OthersVAT' => $item->OthersVAT,
+                'Item5' => $item->Item5,
+                'Item6' => $item->Item6,
+                'Item7' => $item->Item7,
+                'Item8' => $item->Item8,
+                'Item9' => $item->Item9,
+                'Item10' => $item->Item10,
+                'Item11' => $item->Item11,
+                'Item12' => $item->Item12,
+                'Item13' => $item->Item13,
+                'Item14' => $item->Item14,
+                'Item15' => $item->Item15,
+                'Item16' => $item->Item16,
+                'Item17' => $item->Item17,
+                'Item18' => $item->Item18,
+                'Item19' => $item->Item19,
+                'Item20' => $item->Item20,
+                'Item21' => $item->Item21,
+                'Item22' => $item->Item22,
+                'Item23' => $item->Item23,
+                'Item24' => $item->Item2,
+                'Surcharges' => Bills::getSurchargeMobApp($item),
+            ]);
+            
+        }
+
         if ($bills == null) {
             return response()->json(['error' => 'No bills found'], 404);
         } else {
-            $surcharge = [
-                'Surcharges' => Bills::getSurchargeMobApp($bills),
-            ];
 
-            return response()->json((object)array_merge((array)$bills, (array)$surcharge), $this-> successStatus); 
+            return response()->json($data, $this-> successStatus); 
         }
     }
 
