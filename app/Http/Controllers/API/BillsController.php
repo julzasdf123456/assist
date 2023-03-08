@@ -184,6 +184,7 @@ class BillsController extends Controller
                     $join->on('Bills.AccountNumber', '=', 'PaidBills.AccountNumber')
                         ->on('Bills.ServicePeriodEnd', '=', 'PaidBills.ServicePeriodEnd');
                 })
+                ->whereRaw("PaidBills.NetAmount IS NULL")
                 ->select('Bills.ServicePeriodEnd',
                             'Bills.AccountNumber',
                             'Bills.BillNumber',
