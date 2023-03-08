@@ -297,7 +297,7 @@ class BillsController extends Controller
                     ->first();
 
             $surcharge = [
-                'Surcharges' => Bills::getSurcharge($bill),
+                'Surcharges' => Bills::getSurchargeMobApp($bill),
             ];
 
             // REGISTER LOG
