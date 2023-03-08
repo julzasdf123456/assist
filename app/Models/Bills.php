@@ -466,7 +466,7 @@ class Bills extends Model
     }
     
     public static function getSurcharge($bill) {
-        $surcharge = computeSurcharge($bill);
+        $surcharge = Bills::computeSurcharge($bill);
 
         if ($surcharge == 0) {
             return 0;

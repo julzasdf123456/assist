@@ -15,11 +15,14 @@ class UserController extends Controller
          * 
          * @return \Illuminate\Http\Response 
          */ 
-    public function login(){ 
-        if(Auth::attempt(['username' => request('username'), 'password' => request('password')])){ 
+    public function login(Request $request){ 
+        $username = $request['username'];
+        $password = $request['password'];
+
+        if(Auth::attempt(['username' => $username, 'password' => $password])){ 
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('assist')-> accessToken; 
-            $success['username'] = request('username');
+            $success['username'] = $username;
             $success['id'] = $user->id;
 
             // SET ACTIVITY

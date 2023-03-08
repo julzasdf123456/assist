@@ -22,7 +22,7 @@ use App\Http\Controllers\API\ThirdPartyAPI;
 */
 
 // LOGIN AND REGISTER
-Route::post('login', [UserController::class, 'login']);
+Route::get('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
 Route::get('logout', [UserController::class, 'logout']);
 Route::post('reset-password', [UserController::class, 'resetPassword']);
