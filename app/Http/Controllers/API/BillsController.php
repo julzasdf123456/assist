@@ -16,7 +16,7 @@ class BillsController extends Controller
     public $successStatus = 200;
 
     public function getLatestBills(Request $request) {
-        $bill = DB::connection('sqlsrv2')
+        $bills = DB::connection('sqlsrv2')
                     ->table('Bills')
                     ->leftJoin('BillsExtension', function($join) {
                         $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
