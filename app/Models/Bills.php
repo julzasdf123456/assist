@@ -419,6 +419,25 @@ class Bills extends Model
         return round($netAmount - $excemptions, 2);
     }
 
+    public static function getSurchargableAmountMobApp($bill) {
+        $netAmount = $bill->NetAmount != null ? floatval($bill->NetAmount) : 0;
+        $excemptions = floatval($bill->ACRM_TAFPPCA != null ? $bill->ACRM_TAFPPCA : '0') +
+                        floatval($bill->DAA_GRAM != null ? $bill->DAA_GRAM : '0') +
+                        floatval($bill->Others != null ? $bill->Others : '0') +
+                        floatval($bill->GenerationVAT != null ? $bill->GenerationVAT : '0') +
+                        floatval($bill->TransmissionVAT != null ? $bill->TransmissionVAT : '0') +
+                        floatval($bill->SLVAT != null ? $bill->SLVAT : '0') +
+                        floatval($bill->DistributionVAT != null ? $bill->DistributionVAT : '0') +
+                        floatval($bill->OthersVAT != null ? $bill->OthersVAT : '0') +
+                        floatval($bill->DAA_VAT != null ? $bill->DAA_VAT : '0') +
+                        floatval($bill->ACRM_VAT != null ? $bill->ACRM_VAT : '0') +
+                        floatval($bill->FBHCAmt != null ? $bill->FBHCAmt : '0') +
+                        floatval($bill->Item16 != null ? $bill->Item16 : '0') +
+                        floatval($bill->Item17 != null ? $bill->Item17 : '0') +
+                        floatval($bill->PR);
+        return round($netAmount - $excemptions, 2);
+    }
+
     public static function computeSurcharge($bill) {
         if (Bills::isNonResidential($bill->ConsumerType)) {
             // IF CS, CL, I

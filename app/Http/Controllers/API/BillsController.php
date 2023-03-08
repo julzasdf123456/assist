@@ -19,7 +19,7 @@ class BillsController extends Controller
         $bills = DB::connection('sqlsrv2')
                     ->table('Bills')
                     ->leftJoin('PaidBills', 'Bills.BillNumber', '=', 'PaidBills.BillNumber')
-                    ->select('Bills.BillNumber', 'Bills.ServicePeriodEnd', 'Bills.PowerKWH', 'Bills.NetAmount', 'PaidBills.NetAmount as NetAmountPaid')
+                    ->select('Bills.*', 'PaidBills.NetAmount as NetAmountPaid')
                     ->where('Bills.AccountNumber', $request['q'])
                     ->orderByDesc('Bills.ServicePeriodEnd')
                     ->take(5)
