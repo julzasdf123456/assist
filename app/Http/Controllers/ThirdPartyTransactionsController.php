@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\ThirdPartyTransactions;
 use Illuminate\Support\Facades\DB;
 use App\Models\AccountMaster;
+use App\Models\PaidBills;
 use Flash;
 use Response;
 
@@ -178,6 +179,9 @@ class ThirdPartyTransactionsController extends AppBaseController
         $data = [];
         foreach($transactions as $item) {
             $account = AccountMaster::find($item->AccountNumber);
+            $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
+                ->where('ServicePeriodEnd', $item->ServicePeriodEnd)
+                ->first();
 
             array_push($data, [
                 'id' => $item->id,
@@ -191,7 +195,9 @@ class ThirdPartyTransactionsController extends AppBaseController
                 'Teller' => $item->Teller,
                 'Company' => $item->Company,
                 'ORNumber' => $item->ORNumber,
+                'created_at' => $item->created_at,
                 'ConsumerName' => $account != null ? $account->ConsumerName : '-',
+                'ORNumber' => $paidBill != null ? $paidBill->ORNumber : null,
             ]);
         }
         

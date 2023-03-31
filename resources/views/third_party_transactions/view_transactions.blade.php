@@ -38,7 +38,14 @@
                         <tbody>
                             @foreach ($data as $item)
                                 <tr>
-                                    <td>{{ $item['AccountNumber'] }}</td>
+                                    <td>
+                                        @if ($item['ORNumber'] != null)
+                                            <i class="fas fa-exclamation-circle text-danger ico-tab"></i>
+                                        @else
+                                            <i class="fas fa-check-circle text-success ico-tab"></i>
+                                        @endif
+                                        {{ $item['AccountNumber'] }}
+                                    </td>
                                     <td>{{ $item['ORNumber'] }}</td>
                                     <td>{{ $item['ConsumerName'] }}</td>
                                     <td class="text-right">{{ is_numeric($item['Amount']) ? number_format($item['Amount'], 2) : $item['Amount'] }}</td>
