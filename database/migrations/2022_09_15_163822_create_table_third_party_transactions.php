@@ -25,6 +25,7 @@ class CreateTableThirdPartyTransactions extends Migration
             $table->double('TotalAmount')->nullable();
             $table->string('Company')->nullable();
             $table->string('Teller')->nullable();
+            $table->string('Status')->nullable();
             $table->timestamps();
         });
     }

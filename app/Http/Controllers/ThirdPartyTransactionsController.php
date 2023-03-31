@@ -8,6 +8,8 @@ use App\Repositories\ThirdPartyTransactionsRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\ThirdPartyTransactions;
+use Illuminate\Support\Facades\DB;
+use App\Models\AccountMaster;
 use Flash;
 use Response;
 
@@ -31,7 +33,17 @@ class ThirdPartyTransactionsController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $thirdPartyTransactions = ThirdPartyTransactions::orderByDesc('created_at')->get();
+        $thirdPartyTransactions = DB::table('ThirdPartyTransactions')
+            ->select(
+                DB::raw("TRY_CAST(created_at AS DATE) As DateOfTransaction"),
+                "Company",
+                DB::raw("COUNT(id) AS NumberOfTransactions")
+            )
+            ->whereRaw("Status IS NULL")
+            ->groupBy("Company")
+            ->groupByRaw("TRY_CAST(created_at AS DATE)")
+            ->orderByRaw("TRY_CAST(created_at AS DATE)")
+            ->get();
 
         return view('third_party_transactions.index', [
             'thirdPartyTransactions' => $thirdPartyTransactions
@@ -155,5 +167,38 @@ class ThirdPartyTransactionsController extends AppBaseController
         Flash::success('Third Party Transactions deleted successfully.');
 
         return redirect(route('thirdPartyTransactions.index'));
+    }
+
+    public function viewTransactions($date, $company) {
+        $transactions = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status IS NULL")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [];
+        foreach($transactions as $item) {
+            $account = AccountMaster::find($item->AccountNumber);
+
+            array_push($data, [
+                'id' => $item->id,
+                'AccountNumber' => $item->AccountNumber,
+                'ServicePeriodEnd' => $item->ServicePeriodEnd,
+                'BillNumber' => $item->BillNumber,
+                'KwhUsed' => $item->KwhUsed,
+                'Amount' => $item->Amount,
+                'Surcharge' => $item->Surcharge,
+                'TotalAmount' => $item->TotalAmount,
+                'Teller' => $item->Teller,
+                'Company' => $item->Company,
+                'ORNumber' => $item->ORNumber,
+                'ConsumerName' => $account != null ? $account->ConsumerName : '-',
+            ]);
+        }
+        
+        return view('/third_party_transactions/view_transactions', [
+            'company' => $company,
+            'date' => $date,
+            'data' => $data
+        ]);
     }
 }
