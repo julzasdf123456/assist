@@ -51,7 +51,8 @@ class ThirdPartyTransactions extends Model
         'TotalAmount',
         'Company',
         'Teller',
-        'ORNumber'
+        'ORNumber',
+        'Status'
     ];
 
     /**
@@ -70,7 +71,8 @@ class ThirdPartyTransactions extends Model
         'TotalAmount' => 'float',
         'Company' => 'string',
         'Teller' => 'string',
-        'ORNumber' => 'string'
+        'ORNumber' => 'string',
+        'Status' => 'string'
     ];
 
     /**
@@ -90,7 +92,8 @@ class ThirdPartyTransactions extends Model
         'Teller' => 'nullable|string|max:255',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
-        'ORNumber' => 'nullable|string'
+        'ORNumber' => 'nullable|string',
+        'Status' => 'nullable|string'
     ];
 
     

@@ -53,4 +53,5 @@ Route::resource('thirdPartyTokens', App\Http\Controllers\ThirdPartyTokensControl
 
 Route::resource('billsExtensions', App\Http\Controllers\BillsExtensionController::class);
 
+Route::get('/third_party_transactions/view-transactions/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'viewTransactions'])->name('thirdPartyTransactions.view-transactions');
 Route::resource('thirdPartyTransactions', App\Http\Controllers\ThirdPartyTransactionsController::class);
