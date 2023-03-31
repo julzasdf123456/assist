@@ -46,7 +46,7 @@
                                         @endif
                                         {{ $item['AccountNumber'] }}
                                     </td>
-                                    <td>{{ $item['ORNumber'] }}</td>
+                                    <td>{{ $item['RefNo'] }}</td>
                                     <td>{{ $item['ConsumerName'] }}</td>
                                     <td class="text-right">{{ is_numeric($item['Amount']) ? number_format($item['Amount'], 2) : $item['Amount'] }}</td>
                                     <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format($item['Surcharge'], 2) : $item['Surcharge'] }}</td>

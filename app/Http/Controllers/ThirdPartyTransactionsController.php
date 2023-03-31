@@ -194,7 +194,7 @@ class ThirdPartyTransactionsController extends AppBaseController
                 'TotalAmount' => $item->TotalAmount,
                 'Teller' => $item->Teller,
                 'Company' => $item->Company,
-                'ORNumber' => $item->ORNumber,
+                'RefNo' => $item->ORNumber,
                 'created_at' => $item->created_at,
                 'ConsumerName' => $account != null ? $account->ConsumerName : '-',
                 'ORNumber' => $paidBill != null ? $paidBill->ORNumber : null,
