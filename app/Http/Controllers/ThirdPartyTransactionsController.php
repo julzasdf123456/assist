@@ -184,7 +184,7 @@ class ThirdPartyTransactionsController extends AppBaseController
             $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
                 ->where('ServicePeriodEnd', date('Y-m-d', strtotime($item->ServicePeriodEnd)))
                 ->first();
-
+                
             array_push($data, [
                 'id' => $item->id,
                 'AccountNumber' => $item->AccountNumber,
