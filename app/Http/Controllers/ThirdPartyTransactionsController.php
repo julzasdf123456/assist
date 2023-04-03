@@ -182,7 +182,7 @@ class ThirdPartyTransactionsController extends AppBaseController
         foreach($transactions as $item) {
             $account = AccountMaster::find($item->AccountNumber);
             $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
-                ->where('ServicePeriodEnd', $item->ServicePeriodEnd)
+                ->where('ServicePeriodEnd', date('Y-m-d', strtotime($item->ServicePeriodEnd)))
                 ->first();
 
             array_push($data, [
