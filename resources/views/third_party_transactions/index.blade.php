@@ -32,7 +32,8 @@
                     <thead>
                         <th>Collection Date</th>
                         <th>Company/Collector</th>
-                        <th>No. of Collections</th>
+                        <th class="text-right">No. of Collections</th>
+                        <th class="text-right">Total Collection</th>
                         <th style="width: 120px;"></th>
                     </thead>
                     <tbody>
@@ -40,7 +41,8 @@
                             <tr>
                                 <td>{{ date('F d, Y', strtotime($item->DateOfTransaction)) }}</td>
                                 <td>{{ $item->Company }}</td>
-                                <td>{{ number_format($item->NumberOfTransactions) }}</td>
+                                <td class="text-right">{{ number_format($item->NumberOfTransactions) }}</td>
+                                <td class="text-right">{{ number_format($item->Total, 2) }}</td>
                                 <td>
                                     <a href="{{ route('thirdPartyTransactions.view-transactions', [$item->DateOfTransaction, $item->Company]) }}" class="btn btn-sm btn-primary float-right"><i class="fas fa-eye"></i> View</a>
                                 </td>

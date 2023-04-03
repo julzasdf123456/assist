@@ -40,7 +40,8 @@ class ThirdPartyTransactionsController extends AppBaseController
             ->select(
                 DB::raw("TRY_CAST(created_at AS DATE) As DateOfTransaction"),
                 "Company",
-                DB::raw("COUNT(id) AS NumberOfTransactions")
+                DB::raw("COUNT(id) AS NumberOfTransactions"),
+                DB::raw("SUM(TRY_CAST(TotalAmount AS DECIMAL(15,2))) AS Total")
             )
             ->whereRaw("Status IS NULL")
             ->groupBy("Company")
@@ -298,7 +299,8 @@ class ThirdPartyTransactionsController extends AppBaseController
             ->select(
                 DB::raw("TRY_CAST(created_at AS DATE) As DateOfTransaction"),
                 "Company",
-                DB::raw("COUNT(id) AS NumberOfTransactions")
+                DB::raw("COUNT(id) AS NumberOfTransactions"),
+                DB::raw("SUM(TRY_CAST(TotalAmount AS DECIMAL(15,2))) AS Total")
             )
             ->whereRaw("Status IS NOT NULL")
             ->groupBy("Company")
