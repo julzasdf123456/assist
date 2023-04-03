@@ -5,15 +5,9 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h4><strong class="text-primary">{{ $company }}</strong> Unposted Collection</h4>
+                    <h4><strong class="text-primary">{{ $company }}</strong>Posted Transactions</h4>
                     <p style="margin: 0px !important; padding: 0px !important;">Collection Date: {{ date('F d, Y', strtotime($date)) }}</p>
                 </div>
-                {{-- <div class="col-sm-6">
-                    <a class="btn btn-primary float-right"
-                       href="{{ route('thirdPartyTransactions.create') }}">
-                        Add New
-                    </a>
-                </div> --}}
             </div>
         </div>
     </section>
@@ -31,11 +25,12 @@
                             <th>Billing Mo.</th>
                             <th>Ref. No</th>
                             <th>Consumer Name</th>
+                            <th>OR Number</th>
+                            <th>OR Date</th>
                             <th>Net Amount</th>
                             <th>Surcharges</th>
-                            <th>Surcharges VAT</th>
-                            <th>Total Surcharges</th>
                             <th>Total Amount Paid</th>
+                            <th>Status</th>
                             {{-- <th>Excel Report<br>Data Comparison</th> --}}
                         </thead>
                         <tbody>
@@ -44,22 +39,16 @@
                             @endphp
                             @foreach ($data as $item)
                                 <tr>
-                                    <td title="{{ $item['ORNumber'] }}">
-                                        @if ($item['Posted'] == 'Yes')
-                                            <i class="fas fa-exclamation-circle text-danger ico-tab"></i>
-                                        @else
-                                            <i class="fas fa-check-circle text-success ico-tab"></i>
-                                        @endif
-                                        {{ $item['AccountNumber'] }}
-                                    </td>
+                                    <td>{{ $item['AccountNumber'] }}</td>
                                     <td>{{ date('M Y', strtotime($item['ServicePeriodEnd'])) }}</td>
                                     <td>{{ $item['RefNo'] }}</td>
                                     <td>{{ $item['ConsumerName'] }}</td>
+                                    <td>{{ $item['ORNumber'] }}</td>
+                                    <td>{{ $item['ORDate'] != null ? date('M d, Y', strtotime($item['ORDate'])) : '' }}</td>
                                     <td class="text-right">{{ is_numeric($item['Amount']) ? number_format($item['Amount'], 2) : $item['Amount'] }}</td>
-                                    <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format(floatval($item['Surcharge']) / 1.12, 2) : '-' }}</td>
-                                    <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format(floatval($item['Surcharge']) - (floatval($item['Surcharge']) / 1.12), 2) : '-' }}</td>
                                     <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format($item['Surcharge'], 2) : $item['Surcharge'] }}</td>
                                     <td class="text-right">{{ is_numeric($item['TotalAmount']) ? number_format($item['TotalAmount'], 2) : $item['TotalAmount'] }}</td>
+                                    <td>{{ $item['Status'] }}</td>
                                     {{-- <td class="text-right"></td> --}}
                                 </tr>
                                 @php
@@ -69,15 +58,14 @@
                             <tr>
                                 <th colspan="8">Total Collection</th>
                                 <th class="text-right text-success">{{ number_format($total, 2) }}</th>
+                                <th></th>
                                 {{-- <td class="text-right"></td> --}}
                             </tr>
                         </tbody>
                     </table>
                 </div>  
                 <div class="card-footer">
-                    <button class="btn btn-success" onclick="post()">Post</button>
-
-                    <button class="btn btn-default float-right" onclick="markAsPosted()">Mark as Posted</button>
+                    {{-- <button class="btn btn-default float-right" onclick="markAsPosted()">Mark as Posted</button> --}}
                 </div>
             </div>
         </div>
@@ -86,40 +74,6 @@
 
 @push('page_scripts')
     <script>
-        function post() {
-            Swal.fire({
-                title: 'Posting Confirmation',
-                text : 'Do you want to post these payments?',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url : "{{ route('thirdPartyTransactions.post-transactions') }}",
-                        type : 'GET',
-                        data : {
-                            Date : "{{ $date }}",
-                            Company : "{{ $company }}"
-                        },
-                        success : function(res) {
-                            Toast.fire({
-                                icon : 'success',
-                                text : 'Payments posted!'
-                            })
-                            window.location.href = "{{ route('thirdPartyTransactions.index') }}"
-                        },
-                        error : function(err) {
-                            Toast.fire({
-                                icon : 'error',
-                                text : 'Error posting payments!'
-                            })
-                        }
-                    })
-                } 
-            }) 
-        }
-
         function markAsPosted() {
             Swal.fire({
                 title: 'Do you want to mark these payments as posted?',
