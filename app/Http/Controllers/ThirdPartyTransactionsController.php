@@ -292,4 +292,62 @@ class ThirdPartyTransactionsController extends AppBaseController
 
         return response('ok', 200);
     }
+
+    public function postedTransactions(Request $request) {
+        $thirdPartyTransactions = DB::table('ThirdPartyTransactions')
+            ->select(
+                DB::raw("TRY_CAST(created_at AS DATE) As DateOfTransaction"),
+                "Company",
+                DB::raw("COUNT(id) AS NumberOfTransactions")
+            )
+            ->whereRaw("Status IS NOT NULL")
+            ->groupBy("Company")
+            ->groupByRaw("TRY_CAST(created_at AS DATE)")
+            ->orderByRaw("TRY_CAST(created_at AS DATE) DESC")
+            ->get();
+
+        return view('third_party_transactions.posted_transactions', [
+            'thirdPartyTransactions' => $thirdPartyTransactions
+        ]);
+    }
+
+    public function viewPostedTransactions($date, $company) {
+        $transactions = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status IS NOT NULL")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [];
+        foreach($transactions as $item) {
+            $account = AccountMaster::find($item->AccountNumber);
+            $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
+                ->where('ServicePeriodEnd', date('Y-m-d', strtotime($item->ServicePeriodEnd)))
+                ->first();
+
+            array_push($data, [
+                'id' => $item->id,
+                'AccountNumber' => $item->AccountNumber,
+                'ServicePeriodEnd' => $item->ServicePeriodEnd,
+                'BillNumber' => $item->BillNumber,
+                'KwhUsed' => $item->KwhUsed,
+                'Amount' => $item->Amount,
+                'Surcharge' => $item->Surcharge,
+                'TotalAmount' => $item->TotalAmount,
+                'Teller' => $item->Teller,
+                'Company' => $item->Company,
+                'RefNo' => $item->ORNumber,
+                'created_at' => $item->created_at,
+                'ConsumerName' => $account != null ? $account->ConsumerName : '-',
+                'ORNumber' => $paidBill != null ? $paidBill->ORNumber : null,
+                'ORDate' => $paidBill != null ? $paidBill->ORDate : null,
+                'Status' => $item->Status,
+            ]);
+        }
+        
+        return view('/third_party_transactions/view_posted_transactions', [
+            'company' => $company,
+            'date' => $date,
+            'data' => $data
+        ]);
+    }
 }
