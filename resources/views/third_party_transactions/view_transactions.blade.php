@@ -42,7 +42,7 @@
                             @foreach ($data as $item)
                                 <tr>
                                     <td title="{{ $item['ORNumber'] }}">
-                                        @if ($item['ORNumber'] != null)
+                                        @if ($item['Posted'] == 'Yes')
                                             <i class="fas fa-exclamation-circle text-danger ico-tab"></i>
                                         @else
                                             <i class="fas fa-check-circle text-success ico-tab"></i>
