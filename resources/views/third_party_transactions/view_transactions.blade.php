@@ -28,12 +28,15 @@
                     <table class="table table-hover table-bordered table-sm">
                         <thead>
                             <th>Account No</th>
+                            <th>Billing Mo.</th>
                             <th>Ref. No</th>
                             <th>Consumer Name</th>
                             <th>Net Amount</th>
-                            <th>Surcharge</th>
+                            <th>Surcharges</th>
+                            <th>Surcharges VAT</th>
+                            <th>Total Surcharges</th>
                             <th>Total Amount Paid</th>
-                            <th>Excel Report<br>Data Comparison</th>
+                            {{-- <th>Excel Report<br>Data Comparison</th> --}}
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
@@ -46,21 +49,52 @@
                                         @endif
                                         {{ $item['AccountNumber'] }}
                                     </td>
+                                    <td>{{ date('M Y', strtotime($item['ServicePeriodEnd'])) }}</td>
                                     <td>{{ $item['RefNo'] }}</td>
                                     <td>{{ $item['ConsumerName'] }}</td>
                                     <td class="text-right">{{ is_numeric($item['Amount']) ? number_format($item['Amount'], 2) : $item['Amount'] }}</td>
+                                    <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format(floatval($item['Surcharge']) / 1.12, 2) : '-' }}</td>
+                                    <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format(floatval($item['Surcharge']) - (floatval($item['Surcharge']) / 1.12), 2) : '-' }}</td>
                                     <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format($item['Surcharge'], 2) : $item['Surcharge'] }}</td>
                                     <td class="text-right">{{ is_numeric($item['TotalAmount']) ? number_format($item['TotalAmount'], 2) : $item['TotalAmount'] }}</td>
-                                    <td class="text-right"></td>
+                                    {{-- <td class="text-right"></td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>  
                 <div class="card-footer">
-                    <button class="btn btn-success">Post</button>
+                    <button class="btn btn-success" onclick="post()">Post</button>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('page_scripts')
+    <script>
+        function post() {
+            $.ajax({
+                url : "{{ route('thirdPartyTransactions.post-transactions') }}",
+                type : 'GET',
+                data : {
+                    Date : "{{ $date }}",
+                    Company : "{{ $company }}"
+                },
+                success : function(res) {
+                    Toast.fire({
+                        icon : 'success',
+                        text : 'Payments posted!'
+                    })
+                    window.location.href = "{{ route('thirdPartyTransactions.index') }}"
+                },
+                error : function(err) {
+                    Toast.fire({
+                        icon : 'error',
+                        text : 'Error posting payments!'
+                    })
+                }
+            })
+        }
+    </script>
+@endpush

@@ -9,8 +9,10 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\ThirdPartyTransactions;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\AccountMaster;
 use App\Models\PaidBills;
+use App\Models\Bills;
 use Flash;
 use Response;
 
@@ -206,5 +208,69 @@ class ThirdPartyTransactionsController extends AppBaseController
             'date' => $date,
             'data' => $data
         ]);
+    }
+
+    public function postTransactions(Request $request) {
+        $date = $request['Date'];
+        $company = $request['Company'];
+
+        $transactions = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status IS NULL")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [];
+        foreach($transactions as $item) {
+            $account = AccountMaster::find($item->AccountNumber);
+            $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
+                ->where('ServicePeriodEnd', $item->ServicePeriodEnd)
+                ->first();
+            $bill = Bills::where('AccountNumber', $item->AccountNumber)
+                ->where('ServicePeriodEnd', $item->ServicePeriodEnd)
+                ->first();
+
+            if ($paidBill != null) {
+                // SKIP DOUBLE PAYMENTS
+                $item->Status = 'DOUBLE PAYMENTS';
+                $item->save();
+            } else {
+                if ($bill != null) {
+                    // GET VAT OF SURCHARGE FIRST
+                    if ($item->Surcharge > 0) {
+                        $sVat = floatval($item->Surcharge) - (floatval($item->Surcharge) / 1.12);
+                        $surcharge = (floatval($item->Surcharge) / 1.12);
+                    } else {
+                        $sVat = 0;
+                        $surcharge = 0;
+                    }
+
+                    $paidBill = new PaidBills;
+                    $paidBill->AccountNumber = $item->AccountNumber;
+                    $paidBill->BillNumber = $bill->BillNumber;
+                    $paidBill->ServicePeriodEnd = $bill->ServicePeriodEnd;
+                    $paidBill->Power = $bill->KWHAmount;
+                    $paidBill->Meter = round(floatval($bill->Item2) + $sVat, 2);
+                    $paidBill->PR = $bill->PR;
+                    $paidBill->Others = $bill->Others;
+                    $paidBill->NetAmount = $item->TotalAmount;
+                    $paidBill->PaymentType = 'SUB-OFFICE/STATION';
+                    $paidBill->ORNumber = null;
+                    $paidBill->Teller = $item->Company;
+                    $paidBill->DCRNumber = null;
+                    $paidBill->PostingDate = $item->created_at;
+                    $paidBill->PostingSequence = '1';
+                    $paidBill->PromptPayment = '0';
+                    $paidBill->Surcharge = round($surcharge, 2);
+                    $paidBill->save();
+
+                    $item->Status = 'POSTED | ' . Auth::user()->name;
+                    $item->save();
+                } else {
+                    // BILL NOT FOUND
+                }               
+            }
+        }
+
+        return response('ok', 200);
     }
 }
