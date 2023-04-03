@@ -184,7 +184,7 @@ class ThirdPartyTransactionsController extends AppBaseController
             $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
                 ->where('ServicePeriodEnd', date('Y-m-d', strtotime($item->ServicePeriodEnd)))
                 ->first();
-                
+
             array_push($data, [
                 'id' => $item->id,
                 'AccountNumber' => $item->AccountNumber,
@@ -200,6 +200,7 @@ class ThirdPartyTransactionsController extends AppBaseController
                 'created_at' => $item->created_at,
                 'ConsumerName' => $account != null ? $account->ConsumerName : '-',
                 'ORNumber' => $paidBill != null ? $paidBill->ORNumber : null,
+                'Posted' => $paidBill != null ? 'Yes' : 'No',
             ]);
         }
         
