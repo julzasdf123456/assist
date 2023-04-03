@@ -274,4 +274,22 @@ class ThirdPartyTransactionsController extends AppBaseController
 
         return response('ok', 200);
     }
+
+    public function markAsPosted(Request $request) {
+        $date = $request['Date'];
+        $company = $request['Company'];
+
+        $transactions = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status IS NULL")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [];
+        foreach($transactions as $item) {
+            $item->Status = 'POSTED | ' . Auth::user()->name;
+            $item->save();
+        }
+
+        return response('ok', 200);
+    }
 }

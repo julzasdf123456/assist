@@ -65,6 +65,8 @@
                 </div>  
                 <div class="card-footer">
                     <button class="btn btn-success" onclick="post()">Post</button>
+
+                    <button class="btn btn-default float-right" onclick="markAsPosted()">Mark as Posted</button>
                 </div>
             </div>
         </div>
@@ -95,6 +97,40 @@
                     })
                 }
             })
+        }
+
+        function markAsPosted() {
+            Swal.fire({
+                title: 'Do you want to mark these payments as posted?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url : "{{ route('thirdPartyTransactions.mark-as-posted') }}",
+                        type : 'GET',
+                        data : {
+                            Date : "{{ $date }}",
+                            Company : "{{ $company }}"
+                        },
+                        success : function(res) {
+                            Toast.fire({
+                                icon : 'success',
+                                text : 'Payments marked as posted!'
+                            })
+                            window.location.href = "{{ route('thirdPartyTransactions.index') }}"
+                        },
+                        error : function(err) {
+                            Toast.fire({
+                                icon : 'error',
+                                text : 'Error marking payments!'
+                            })
+                        }
+                    })
+                } 
+            })
+            
         }
     </script>
 @endpush
