@@ -58,4 +58,6 @@ Route::get('/third_party_transactions/post-transactions', [App\Http\Controllers\
 Route::get('/third_party_transactions/mark-as-posted', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'markAsPosted'])->name('thirdPartyTransactions.mark-as-posted');
 Route::get('/third_party_transactions/posted-transactions', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'postedTransactions'])->name('thirdPartyTransactions.posted-transactions');
 Route::get('/third_party_transactions/view-posted-transactions/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'viewPostedTransactions'])->name('thirdPartyTransactions.view-posted-transactions');
+Route::get('/third_party_transactions/print-double-payments/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'printDoublePayments'])->name('thirdPartyTransactions.print-double-payments');
+Route::get('/third_party_transactions/print-posted-payments/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'printPostedPayments'])->name('thirdPartyTransactions.print-posted-payments');
 Route::resource('thirdPartyTransactions', App\Http\Controllers\ThirdPartyTransactionsController::class);

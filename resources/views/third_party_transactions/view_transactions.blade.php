@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h4><strong class="text-primary">{{ $company }}</strong> Unposted Collection</h4>
+                    <h4><strong class="text-primary">{{ $company }}</strong> <span class="text-danger">Unposted Collection</span></h4>
                     <p style="margin: 0px !important; padding: 0px !important;">Collection Date: {{ date('F d, Y', strtotime($date)) }}</p>
                 </div>
                 {{-- <div class="col-sm-6">
@@ -22,7 +22,7 @@
         <div class="col-lg-12">
             <div class="card shadow-none" style="height: 75vh;">
                 <div class="card-header">
-                    <span class="card-title">Logged Collection</span>
+                    <span class="card-title">Logged Collection <span class="text-primary">({{ count($data) }} payments)</span></span>
                 </div>
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover table-bordered table-sm">
@@ -107,7 +107,7 @@
                                 icon : 'success',
                                 text : 'Payments posted!'
                             })
-                            window.location.href = "{{ route('thirdPartyTransactions.index') }}"
+                            window.location.href = "{{ url('/third_party_transactions/view-posted-transactions') }}" + "/{{ $date }}/{{ $company }}"
                         },
                         error : function(err) {
                             Toast.fire({
