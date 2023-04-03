@@ -41,7 +41,7 @@
                         <tbody>
                             @foreach ($data as $item)
                                 <tr>
-                                    <td>
+                                    <td title="{{ $item['ORNumber'] }}">
                                         @if ($item['ORNumber'] != null)
                                             <i class="fas fa-exclamation-circle text-danger ico-tab"></i>
                                         @else
