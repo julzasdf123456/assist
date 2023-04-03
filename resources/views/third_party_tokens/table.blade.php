@@ -20,7 +20,7 @@
             <td>{{ $thirdPartyTokens->AccessKey }}</td>
             <td>
                 {{ $thirdPartyTokens->Token }}
-                <a href="{{ route('thirdPartyTokens.regenerate-token', [$thirdPartyTokens->id]) }}" class="btn btn-xs btn-info float-right"><i class="fas fa-sync ico-tab-mini"></i>Re-generate</a>
+                {{-- <a href="{{ route('thirdPartyTokens.regenerate-token', [$thirdPartyTokens->id]) }}" class="btn btn-xs btn-info float-right"><i class="fas fa-sync ico-tab-mini"></i>Re-generate</a> --}}
             </td>
             <td>
                 {{ date('F d, Y', strtotime($thirdPartyTokens->ExpiresIn)) }}
