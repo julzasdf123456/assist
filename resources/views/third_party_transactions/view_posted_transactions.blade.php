@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h4><strong class="text-primary">{{ $company }}</strong>Posted Transactions</h4>
+                    <h4><strong class="text-primary">{{ $company }}</strong> <span class="text-success">Posted Transactions</span></h4>
                     <p style="margin: 0px !important; padding: 0px !important;">Collection Date: {{ date('F d, Y', strtotime($date)) }}</p>
                 </div>
             </div>
@@ -16,7 +16,12 @@
         <div class="col-lg-12">
             <div class="card shadow-none" style="height: 75vh;">
                 <div class="card-header">
-                    <span class="card-title">Logged Collection</span>
+                    <span class="card-title">Logged Collection <span class="text-success">({{ count($data) }} payments)</span></span>
+
+                    <div class="card-tools">
+                        <a href="{{ route('thirdPartyTransactions.print-double-payments', [$date, $company]) }}" class="btn btn-warning btn-tool">Print Double Payments</a>
+                        <a href="{{ route('thirdPartyTransactions.print-posted-payments', [$date, $company]) }}" class="btn btn-success btn-tool">Print Posted Payments</a>
+                    </div>
                 </div>
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover table-bordered table-sm">

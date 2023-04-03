@@ -350,4 +350,74 @@ class ThirdPartyTransactionsController extends AppBaseController
             'data' => $data
         ]);
     }
+
+    public function printDoublePayments($date, $company) {
+        $transactions = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status='DOUBLE PAYMENTS'")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [];
+        foreach($transactions as $item) {
+            $account = AccountMaster::find($item->AccountNumber);
+
+            array_push($data, [
+                'id' => $item->id,
+                'AccountNumber' => $item->AccountNumber,
+                'ServicePeriodEnd' => $item->ServicePeriodEnd,
+                'BillNumber' => $item->BillNumber,
+                'KwhUsed' => $item->KwhUsed,
+                'Amount' => $item->Amount,
+                'Surcharge' => $item->Surcharge,
+                'TotalAmount' => $item->TotalAmount,
+                'Teller' => $item->Teller,
+                'Company' => $item->Company,
+                'RefNo' => $item->ORNumber,
+                'created_at' => $item->created_at,
+                'ConsumerName' => $account != null ? $account->ConsumerName : '-',
+                'Status' => $item->Status,
+            ]);
+        }
+
+        return view('/third_party_transactions/print_double_payments', [
+            'company' => $company,
+            'date' => $date,
+            'data' => $data
+        ]);
+    }
+
+    public function printPostedPayments($date, $company) {
+        $transactions = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status LIKE 'POSTED%'")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [];
+        foreach($transactions as $item) {
+            $account = AccountMaster::find($item->AccountNumber);
+
+            array_push($data, [
+                'id' => $item->id,
+                'AccountNumber' => $item->AccountNumber,
+                'ServicePeriodEnd' => $item->ServicePeriodEnd,
+                'BillNumber' => $item->BillNumber,
+                'KwhUsed' => $item->KwhUsed,
+                'Amount' => $item->Amount,
+                'Surcharge' => $item->Surcharge,
+                'TotalAmount' => $item->TotalAmount,
+                'Teller' => $item->Teller,
+                'Company' => $item->Company,
+                'RefNo' => $item->ORNumber,
+                'created_at' => $item->created_at,
+                'ConsumerName' => $account != null ? $account->ConsumerName : '-',
+                'Status' => $item->Status,
+            ]);
+        }
+
+        return view('/third_party_transactions/print_posted_payments', [
+            'company' => $company,
+            'date' => $date,
+            'data' => $data
+        ]);
+    }
 }
