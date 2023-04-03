@@ -36,6 +36,7 @@
                             <th>Surcharges VAT</th>
                             <th>Total Surcharges</th>
                             <th>Total Amount Paid</th>
+                            <th>Payment Time</th>
                             {{-- <th>Excel Report<br>Data Comparison</th> --}}
                         </thead>
                         <tbody>
@@ -60,6 +61,7 @@
                                     <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format(floatval($item['Surcharge']) - (floatval($item['Surcharge']) / 1.12), 2) : '-' }}</td>
                                     <td class="text-right">{{ is_numeric($item['Surcharge']) ? number_format($item['Surcharge'], 2) : $item['Surcharge'] }}</td>
                                     <td class="text-right">{{ is_numeric($item['TotalAmount']) ? number_format($item['TotalAmount'], 2) : $item['TotalAmount'] }}</td>
+                                    <td>{{ date('M d, Y h:i A', strtotime($item['created_at'])) }}</td>
                                     {{-- <td class="text-right"></td> --}}
                                 </tr>
                                 @php
@@ -69,6 +71,7 @@
                             <tr>
                                 <th colspan="8">Total Collection</th>
                                 <th class="text-right text-success">{{ number_format($total, 2) }}</th>
+                                <th></th>
                                 {{-- <td class="text-right"></td> --}}
                             </tr>
                         </tbody>
