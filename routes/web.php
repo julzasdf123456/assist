@@ -55,4 +55,5 @@ Route::resource('billsExtensions', App\Http\Controllers\BillsExtensionController
 
 Route::get('/third_party_transactions/view-transactions/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'viewTransactions'])->name('thirdPartyTransactions.view-transactions');
 Route::get('/third_party_transactions/post-transactions', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'postTransactions'])->name('thirdPartyTransactions.post-transactions');
+Route::get('/third_party_transactions/mark-as-posted', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'markAsPosted'])->name('thirdPartyTransactions.mark-as-posted');
 Route::resource('thirdPartyTransactions', App\Http\Controllers\ThirdPartyTransactionsController::class);
