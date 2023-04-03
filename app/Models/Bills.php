@@ -557,4 +557,8 @@ class Bills extends Model
             }
         }
     }
+
+    /**
+     * GET SURCHARGE ONLY WITHOUT VAT
+     */
 }
