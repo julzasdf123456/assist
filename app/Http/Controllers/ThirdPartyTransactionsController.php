@@ -258,7 +258,7 @@ class ThirdPartyTransactionsController extends AppBaseController
                     $paidBill->PaymentType = 'SUB-OFFICE/STATION';
                     $paidBill->ORNumber = null;
                     $paidBill->Teller = $item->Company;
-                    $paidBill->DCRNumber = null;
+                    $paidBill->DCRNumber = "";
                     $paidBill->PostingDate = $item->created_at;
                     $paidBill->PostingSequence = '1';
                     $paidBill->PromptPayment = '0';
