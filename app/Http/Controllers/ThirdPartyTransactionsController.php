@@ -182,8 +182,7 @@ class ThirdPartyTransactionsController extends AppBaseController
         $data = [];
         foreach($transactions as $item) {
             $account = AccountMaster::find($item->AccountNumber);
-            $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
-                ->where('ServicePeriodEnd', date('Y-m-d', strtotime($item->ServicePeriodEnd)))
+            $paidBill = PaidBills::whereRaw("AccountNumber='" . $item->AccountNumber . "' AND ServicePeriodEnd='" . date('Y-m-d', strtotime($item->ServicePeriodEnd)) . "'")
                 ->first();
 
             array_push($data, [
@@ -199,9 +198,9 @@ class ThirdPartyTransactionsController extends AppBaseController
                 'Company' => $item->Company,
                 'RefNo' => $item->ORNumber,
                 'created_at' => $item->created_at,
-                'ConsumerName' => $account != null ? $account->ConsumerName : '-',
-                'ORNumber' => $paidBill != null ? $paidBill->ORNumber : null,
-                'Posted' => $paidBill != null ? 'Yes' : 'No',
+                'ConsumerName' => $account != null ? $account->ConsumerName : '-', 
+                'ORNumber' => '' /**  $paidBill != null ? $paidBill->ORNumber : null **/,
+                'Posted' => '' /**  $paidBill != null ? 'Yes' : 'No' **/,
             ]);
         }
         
@@ -322,9 +321,8 @@ class ThirdPartyTransactionsController extends AppBaseController
         $data = [];
         foreach($transactions as $item) {
             $account = AccountMaster::find($item->AccountNumber);
-            $paidBill = PaidBills::where('AccountNumber', $item->AccountNumber)
-                ->where('ServicePeriodEnd', date('Y-m-d', strtotime($item->ServicePeriodEnd)))
-                ->first();
+            $paidBill = PaidBills::whereRaw("AccountNumber='" . $item->AccountNumber . "' AND ServicePeriodEnd='" . date('Y-m-d', strtotime($item->ServicePeriodEnd)) . "'")
+            ->first();
 
             array_push($data, [
                 'id' => $item->id,
