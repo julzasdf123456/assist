@@ -424,6 +424,7 @@ class ThirdPartyTransactionsController extends AppBaseController
     public function getPostedCalendarData(Request $request) {
         $data = DB::connection('sqlsrv')
             ->table('ThirdPartyTransactions')
+            ->whereRaw("Status IS NOT NULL")
             ->select(
                 DB::raw("TRY_CAST(created_at AS DATE) AS DateCollected"),
                 'Company',
