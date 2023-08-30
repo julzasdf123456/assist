@@ -136,7 +136,8 @@
                         obj['borderColor'] = '#66bb6a';
 
                         obj['extendedProps'] = {
-                           ScheduleId : res[index]['id']
+                           CollectionDate : res[index]['DateCollected'],
+                           Company : res[index]['Company'],
                         }
                         
                         obj['start'] = moment(timestamp).format('YYYY-MM-DD');
@@ -165,7 +166,7 @@
                         height : 780,
                         // initialDate : moment(month).format("YYYY-MM-DD")
                         eventClick : function(info) {
-                            // window.location.href = "{{ url('/disconnectionSchedules') }}/" + info.event.extendedProps['ScheduleId']
+                            window.location.href = "{{ url('/third_party_transactions/view-posted-transactions/') }}/" + info.event.extendedProps['CollectionDate'] + "/" + info.event.extendedProps['Company']
                         }
                     });
 
