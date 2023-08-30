@@ -86,7 +86,7 @@
                     <span id="month-label" style="font-size: 1.4em; font-weight: bold;">{{ date('F Y') }}</span>
                     <span style="color: #878787;">Collection Trend</span>
                 </span>
-                <div>
+                <div id="graph-holder">
                     <canvas id="collection-summary-chart" style="height: 440px;"></canvas>
                 </div>
             </div>
@@ -108,8 +108,11 @@
         })
 
         function graphCollectionSummary(month, year) {
-            var collectionSummaryChartCanvas = document.getElementById('collection-summary-chart').getContext('2d')
-            // $('#application-chart-canvas').get(0).getContext('2d');
+            $('#collection-summary-chart').remove()
+            $('#graph-holder').append('<canvas id="collection-summary-chart" style="height: 440px;"></canvas>')
+
+            var collectionSummaryChartCanvas = $('#collection-summary-chart').get(0).getContext('2d')
+            
             var dates = []
             for (var i=0; i<31; i++) {
                 dates.push(['Day ' + (i + 1)])
