@@ -55,6 +55,7 @@ class ThirdPartyAPI extends Controller {
                             ->select('AccountMaster.ConsumerName',
                                 'AccountMaster.ConsumerAddress',
                                 'AccountMaster.AccountStatus',
+                                'AccountMaster.ComputeMode',
                                 'Bills.AccountNumber',
                                 'Bills.PowerPreviousReading',
                                 'Bills.PowerPresentReading',
@@ -191,19 +192,35 @@ class ThirdPartyAPI extends Controller {
                             if ($paymentChecking != null) {
                                 
                             } else {
-                                array_push($billData, [
-                                    'BillNumber' => trim($item->BillNumber),
-                                    'BillingMonth' => date('Y-m-d', strtotime($item->ServicePeriodEnd)),
-                                    'DueDate' => date('Y-m-d', strtotime($item->DueDate)),
-                                    'KwhUsed' => $item->PowerKWH,
-                                    'SubTotal' => floatval($item->NetAmount),
-                                    'Surcharge' => round(Bills::getSurcharge($item), 2),
-                                    'AmountDue' => round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2),
-                                ]);
+                                if ($account->ComputeMode == 'NetMetered') {
+                                    array_push($billData, [
+                                        'BillNumber' => trim($item->BillNumber),
+                                        'BillingMonth' => date('Y-m-d', strtotime($item->ServicePeriodEnd)),
+                                        'DueDate' => date('Y-m-d', strtotime($item->DueDate)),
+                                        'KwhUsed' => $item->PowerKWH,
+                                        'SubTotal' => floatval($item->NetMeteringNetAmount),
+                                        'Surcharge' => round(Bills::getSurcharge($item), 2),
+                                        'AmountDue' => round(floatval($item->NetMeteringNetAmount) + Bills::getSurcharge($item), 2),
+                                    ]);
 
-                                $totalSurcharge += round(Bills::getSurcharge($item), 2);
-                                $totalSubtotal += floatval($item->NetAmount);
-                                $totalAmountDue += round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2);
+                                    $totalSurcharge += round(Bills::getSurcharge($item), 2);
+                                    $totalSubtotal += floatval($item->NetMeteringNetAmount);
+                                    $totalAmountDue += round(floatval($item->NetMeteringNetAmount) + Bills::getSurcharge($item), 2);
+                                } else {
+                                    array_push($billData, [
+                                        'BillNumber' => trim($item->BillNumber),
+                                        'BillingMonth' => date('Y-m-d', strtotime($item->ServicePeriodEnd)),
+                                        'DueDate' => date('Y-m-d', strtotime($item->DueDate)),
+                                        'KwhUsed' => $item->PowerKWH,
+                                        'SubTotal' => floatval($item->NetAmount),
+                                        'Surcharge' => round(Bills::getSurcharge($item), 2),
+                                        'AmountDue' => round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2),
+                                    ]);
+
+                                    $totalSurcharge += round(Bills::getSurcharge($item), 2);
+                                    $totalSubtotal += floatval($item->NetAmount);
+                                    $totalAmountDue += round(floatval($item->NetAmount) + Bills::getSurcharge($item), 2);
+                                }
                             }
                         }
 
@@ -268,6 +285,7 @@ class ThirdPartyAPI extends Controller {
                                 ->select('AccountMaster.ConsumerName',
                                     'AccountMaster.ConsumerAddress',
                                     'AccountMaster.AccountStatus',
+                                    'AccountMaster.ComputeMode',
                                     'Bills.AccountNumber',
                                     'Bills.PowerPreviousReading',
                                     'Bills.PowerPresentReading',
@@ -395,7 +413,12 @@ class ThirdPartyAPI extends Controller {
                                     // VALIDATE AMOUNT
                                     if (is_numeric($amount)) {
                                         $amnt = round(floatval($amount), 2);
-                                        $billAmnt = round(floatval($bill->NetAmount) + Bills::getSurcharge($bill), 2);
+
+                                        if ($account->ComputeMode == 'NetMetered') {
+                                            $billAmnt = round(floatval($bill->NetMeteringNetAmount) + Bills::getSurcharge($bill), 2);
+                                        } else {
+                                            $billAmnt = round(floatval($bill->NetAmount) + Bills::getSurcharge($bill), 2);
+                                        }
 
                                         if ($amnt < $billAmnt) {
                                             return response()->json('Amount to be transacted should always be greater than or equal to bill amount', $this->notAllowed);
@@ -406,7 +429,7 @@ class ThirdPartyAPI extends Controller {
                                             $transaction->AccountNumber = $account->AccountNumber;
                                             $transaction->BillNumber = $bill->BillNumber;
                                             $transaction->KwhUsed = $bill->PowerKWH;
-                                            $transaction->Amount = $bill->NetAmount;
+                                            $transaction->Amount = ($account->ComputeMode == 'NetMetered' ? $bill->NetAmount : $bill->NetMeteringNetAmount);
                                             $transaction->Surcharge = round(Bills::getSurcharge($bill), 2);
                                             $transaction->TotalAmount = $billAmnt;
                                             $transaction->Company = $company;

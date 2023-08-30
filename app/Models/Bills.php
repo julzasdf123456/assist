@@ -419,6 +419,32 @@ class Bills extends Model
         return round($netAmount - $excemptions, 2);
     }
 
+    public static function getSurchargableAmountNetMetering($bill) {
+        $netAmount = $bill->NetMeteringNetAmount != null ? floatval($bill->NetMeteringNetAmount) : 0;
+        $excemptions = floatval($bill->ACRM_TAFPPCA != null ? $bill->ACRM_TAFPPCA : '0') +
+                        floatval($bill->DAA_GRAM != null ? $bill->DAA_GRAM : '0') +
+                        floatval($bill->Others != null ? $bill->Others : '0') +
+                        floatval($bill->GenerationVAT != null ? $bill->GenerationVAT : '0') +
+                        floatval($bill->TransmissionVAT != null ? $bill->TransmissionVAT : '0') +
+                        floatval($bill->SLVAT != null ? $bill->SLVAT : '0') +
+                        floatval($bill->DistributionVAT != null ? $bill->DistributionVAT : '0') +
+                        floatval($bill->OthersVAT != null ? $bill->OthersVAT : '0') +
+                        floatval($bill->DAA_VAT != null ? $bill->DAA_VAT : '0') +
+                        floatval($bill->ACRM_VAT != null ? $bill->ACRM_VAT : '0') +
+                        floatval($bill->FBHCAmt != null ? $bill->FBHCAmt : '0') +
+                        floatval($bill->Item16 != null ? $bill->Item16 : '0') +
+                        floatval($bill->Item17 != null ? $bill->Item17 : '0') +
+                        floatval($bill->PR);
+
+        $amnt = round($netAmount - $excemptions, 2);
+
+        if ($amnt < 0) {
+            return 0;
+        } else {
+            return round($netAmount - $excemptions, 2);
+        }
+    }
+
     public static function getSurchargableAmountMobApp($bill) {
         $netAmount = $bill->NetAmount != null ? floatval($bill->NetAmount) : 0;
         $excemptions = floatval($bill->ACRM_TAFPPCA != null ? $bill->ACRM_TAFPPCA : '0') +
@@ -484,6 +510,52 @@ class Bills extends Model
         }
     }
 
+    public static function computeSurchargeNetMetered($bill) {
+        if (Bills::isNonResidential($bill->ConsumerType)) {
+            // IF CS, CL, I
+            if (floatval($bill->PowerKWH) > 1000) {
+                // IF MORE THAN 1000 KWH
+                
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate . ' +30 days'))) {
+                    // IF MORE THAN 30 days of due date
+                    return (Bills::getSurchargableAmountNetMetering($bill) * .05) + ((Bills::getSurchargableAmountNetMetering($bill) * .05) * .12);
+                } else {
+                    if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                        return (Bills::getSurchargableAmountNetMetering($bill) * .03) + ((Bills::getSurchargableAmountNetMetering($bill) * .03) * .12);
+                    } else {
+                        // NO SURCHARGE
+                        return 0;
+                    }
+                }
+            } else {
+                // IF LESS THAN 1000 KWH
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                    return (Bills::getSurchargableAmountNetMetering($bill) * .03) + ((Bills::getSurchargableAmountNetMetering($bill) * .03) * .12);
+                } else {
+                    // NO SURCHARGE
+                    return 0;
+                }
+            }
+        } else {
+            if ($bill->ConsumerType == 'P') {
+                // IF PUBLIC BUILDING, NO SURCHARGE
+                return 0;
+            } else {
+                // RESIDENTIALS
+                if (date('Y-m-d') > date('Y-m-d', strtotime($bill->DueDate))) {
+                    if (floatval($bill->NetMeteringNetAmount) > 1667) {
+                        return (Bills::getSurchargableAmountNetMetering($bill) * .03) + ((Bills::getSurchargableAmountNetMetering($bill) * .03) * .12);
+                    } else {
+                        return 56;
+                    }
+                } else {
+                    // NO SURCHARGE
+                    return 0;
+                }
+            }
+        }
+    }
+
     public static function computeSurchargeMobApp($bill) {
         if (Bills::isNonResidential($bill->ConsumerType)) {
             // IF CS, CL, I
@@ -531,15 +603,29 @@ class Bills extends Model
     }
     
     public static function getSurcharge($bill) {
-        $surcharge = Bills::computeSurcharge($bill);
+        if ($bill->ComputeMode == 'NetMetered') {
+            $surcharge = Bills::computeSurchargeNetMetered($bill);
 
-        if ($surcharge == 0) {
-            return 0;
-        } else {
-            if ($surcharge < 56) {
-                return 56;
+            if ($surcharge == 0) {
+                return 0;
             } else {
-                return $surcharge;
+                if ($surcharge < 56) {
+                    return 56;
+                } else {
+                    return $surcharge;
+                }
+            }
+        } else {
+            $surcharge = Bills::computeSurcharge($bill);
+
+            if ($surcharge == 0) {
+                return 0;
+            } else {
+                if ($surcharge < 56) {
+                    return 56;
+                } else {
+                    return $surcharge;
+                }
             }
         }
     }
