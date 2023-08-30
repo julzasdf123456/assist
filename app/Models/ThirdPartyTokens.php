@@ -43,7 +43,8 @@ class ThirdPartyTokens extends Model
         'Token',
         'ExpiresIn',
         'Status',
-        'Notes'
+        'Notes',
+        'ColorHex'
     ];
 
     /**
@@ -58,7 +59,8 @@ class ThirdPartyTokens extends Model
         'Token' => 'string',
         'ExpiresIn' => 'date',
         'Status' => 'string',
-        'Notes' => 'string'
+        'Notes' => 'string',
+        'ColorHex' => 'string'
     ];
 
     /**
@@ -74,7 +76,8 @@ class ThirdPartyTokens extends Model
         'Status' => 'nullable|string|max:200',
         'Notes' => 'nullable|string|max:600',
         'created_at' => 'nullable',
-        'updated_at' => 'nullable'
+        'updated_at' => 'nullable',
+        'ColorHex' => 'nullable|string'
     ];
 
     

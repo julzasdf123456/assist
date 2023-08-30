@@ -33,7 +33,7 @@
 <li class="nav-item">
     <a href="{{ route('thirdPartyTransactions.index') }}"
        class="nav-link {{ Request::is('thirdPartyTransactions*') ? 'active' : '' }}">
-       <i class="fas fa-coins ico-tab"></i><p>Third Party Transactions</p>
+       <i class="fas fa-coins ico-tab"></i><p>Third Party Collection</p>
     </a>
 </li>
 

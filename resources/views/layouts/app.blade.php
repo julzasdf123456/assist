@@ -170,6 +170,8 @@
 
 <script src="{{ asset('js/calendarfull.min.js') }}"></script>
 
+<script src="{{ asset('js/chart.min.js') }}"></script>
+
 <script>
     $(function () {
         bsCustomFileInput.init();

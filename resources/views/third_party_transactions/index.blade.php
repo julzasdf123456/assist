@@ -23,9 +23,10 @@
 
         <div class="clearfix"></div>
 
-        <div class="card">
+        {{-- UNPOSTED TRANSACTIONS --}}
+        <div class="card shadow-none">
             <div class="card-header">
-                <span class="card-title">Un-Posted Collections from Third-Party Collectors</span>
+                <span class="card-title"><i class="fas fa-info-circle ico-tab"></i>Un-Posted Collections from Third-Party Collectors</span>
             </div>
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover table-sm table-bordered">
@@ -52,7 +53,167 @@
                 </table>
             </div>
         </div>
+
+        {{-- DASHBOARD --}}
+        <div class="card shadow-none">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-chart-line ico-tab"></i>Monthly Collection Trend</span>
+
+                <div>
+                    <button id="filter-btn" class="btn btn-primary btn-sm float-right" title="Filter" style="margin-left: 5px;"><i class="fas fa-filter"></i></button>
+                    {{-- YEAR --}}
+                    <input id="year-select" type="number" class="form-control form-control-sm float-right" placeholder="Year" value="{{ date('Y') }}" style="width: 120px; margin-left: 5px;">
+
+                    {{-- MONTHS --}}
+                    <select id="month-select" style="width: 100px;" class="form-control form-control-sm float-right">
+                        <option value="01" {{ date('m')=='01' ? 'selected' : '' }}>January</option>
+                        <option value="02" {{ date('m')=='02' ? 'selected' : '' }}>February</option>
+                        <option value="03" {{ date('m')=='03' ? 'selected' : '' }}>March</option>
+                        <option value="04" {{ date('m')=='04' ? 'selected' : '' }}>April</option>
+                        <option value="05" {{ date('m')=='05' ? 'selected' : '' }}>May</option>
+                        <option value="06" {{ date('m')=='06' ? 'selected' : '' }}>June</option>
+                        <option value="07" {{ date('m')=='07' ? 'selected' : '' }}>July</option>
+                        <option value="08" {{ date('m')=='08' ? 'selected' : '' }}>August</option>
+                        <option value="09" {{ date('m')=='09' ? 'selected' : '' }}>September</option>
+                        <option value="10" {{ date('m')=='10' ? 'selected' : '' }}>October</option>
+                        <option value="11" {{ date('m')=='11' ? 'selected' : '' }}>November</option>
+                        <option value="12" {{ date('m')=='12' ? 'selected' : '' }}>December</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                <span>
+                    <span id="month-label" style="font-size: 1.4em; font-weight: bold;">{{ date('F Y') }}</span>
+                    <span style="color: #878787;">Collection Trend</span>
+                </span>
+                <div>
+                    <canvas id="collection-summary-chart" style="height: 440px;"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection
+
+@push('page_scripts')
+    <script>
+        $(document).ready(function() {
+            graphCollectionSummary($('#month-select').val(), $('#year-select').val())
+
+            $('#filter-btn').on('click', function() {
+                $('#month-label').text($("#month-select option:selected").text() + " " + $('#year-select').val())
+
+                graphCollectionSummary($('#month-select').val(), $('#year-select').val())
+            })
+        })
+
+        function graphCollectionSummary(month, year) {
+            var collectionSummaryChartCanvas = document.getElementById('collection-summary-chart').getContext('2d')
+            // $('#application-chart-canvas').get(0).getContext('2d');
+            var dates = []
+            for (var i=0; i<31; i++) {
+                dates.push(['Day ' + (i + 1)])
+            }
+
+            $.ajax({
+                url : "{{ route('thirdPartyTransactions.get-graph-data') }}",
+                type : 'GET',
+                data : {
+                    Month : month,
+                    Year : year
+                },
+                success : function(res) {
+                    if (!jQuery.isEmptyObject(res)) {
+                        var datum = []
+
+                        $.each(res, function(index, element) {
+                            var plotPoints = [
+                                jQuery.isEmptyObject(res[index]['Data01']) ? 0 : Math.round((parseFloat(res[index]['Data01']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data02']) ? 0 : Math.round((parseFloat(res[index]['Data02']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data03']) ? 0 : Math.round((parseFloat(res[index]['Data03']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data04']) ? 0 : Math.round((parseFloat(res[index]['Data04']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data05']) ? 0 : Math.round((parseFloat(res[index]['Data05']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data06']) ? 0 : Math.round((parseFloat(res[index]['Data06']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data07']) ? 0 : Math.round((parseFloat(res[index]['Data07']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data08']) ? 0 : Math.round((parseFloat(res[index]['Data08']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data09']) ? 0 : Math.round((parseFloat(res[index]['Data09']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data10']) ? 0 : Math.round((parseFloat(res[index]['Data10']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data11']) ? 0 : Math.round((parseFloat(res[index]['Data11']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data12']) ? 0 : Math.round((parseFloat(res[index]['Data12']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data13']) ? 0 : Math.round((parseFloat(res[index]['Data13']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data14']) ? 0 : Math.round((parseFloat(res[index]['Data14']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data15']) ? 0 : Math.round((parseFloat(res[index]['Data15']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data16']) ? 0 : Math.round((parseFloat(res[index]['Data16']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data17']) ? 0 : Math.round((parseFloat(res[index]['Data17']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data18']) ? 0 : Math.round((parseFloat(res[index]['Data18']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data19']) ? 0 : Math.round((parseFloat(res[index]['Data19']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data20']) ? 0 : Math.round((parseFloat(res[index]['Data20']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data21']) ? 0 : Math.round((parseFloat(res[index]['Data21']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data22']) ? 0 : Math.round((parseFloat(res[index]['Data22']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data23']) ? 0 : Math.round((parseFloat(res[index]['Data23']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data24']) ? 0 : Math.round((parseFloat(res[index]['Data24']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data25']) ? 0 : Math.round((parseFloat(res[index]['Data25']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data26']) ? 0 : Math.round((parseFloat(res[index]['Data26']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data27']) ? 0 : Math.round((parseFloat(res[index]['Data27']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data28']) ? 0 : Math.round((parseFloat(res[index]['Data28']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data29']) ? 0 : Math.round((parseFloat(res[index]['Data29']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data30']) ? 0 : Math.round((parseFloat(res[index]['Data30']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['Data31']) ? 0 : Math.round((parseFloat(res[index]['Data31']) + Number.EPSILON) * 100) / 100,
+                            ]
+
+                            var clump = {}
+                            clump['label'] = res[index]['Company']
+                            clump['backgroundColor'] = res[index]['Color'] + "aa"
+                            clump['borderColor'] = res[index]['Color']
+                            clump['pointRadius'] = 3
+                            clump['pointColor'] = res[index]['Color']
+                            clump['pointStrokeColor'] = 'rgba(60,141,188,1)'
+                            clump['pointHighlightFill'] = '#fff'
+                            clump['pointHighlightStroke'] = 'rgba(60,141,188,1)'
+                            clump['data'] = plotPoints
+
+                            datum.push(clump)
+                        })
+
+                        // console.log(datum)
+
+                        var collectionSummaryChartData = {
+                            labels: dates,
+                            datasets: datum
+                        }
+
+                        var collectionSummaryChartOptions = {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            legend: {
+                                display: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
+
+                        var collectionSummaryChart = new Chart(collectionSummaryChartCanvas, { 
+                            type: 'line',
+                            data: collectionSummaryChartData,
+                            options: collectionSummaryChartOptions
+                        })
+                    }
+                },
+                error : function(err) {
+                    console.log(err)
+                } 
+            })
+        }
+    </script>
+@endpush    
 
