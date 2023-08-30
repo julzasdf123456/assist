@@ -429,7 +429,7 @@ class ThirdPartyAPI extends Controller {
                                             $transaction->AccountNumber = $account->AccountNumber;
                                             $transaction->BillNumber = $bill->BillNumber;
                                             $transaction->KwhUsed = $bill->PowerKWH;
-                                            $transaction->Amount = ($account->ComputeMode == 'NetMetered' ? $bill->NetAmount : $bill->NetMeteringNetAmount);
+                                            $transaction->Amount = ($account->ComputeMode == 'NetMetered' ? $bill->NetMeteringNetAmount : $bill->NetAmount);
                                             $transaction->Surcharge = round(Bills::getSurcharge($bill), 2);
                                             $transaction->TotalAmount = $billAmnt;
                                             $transaction->Company = $company;
