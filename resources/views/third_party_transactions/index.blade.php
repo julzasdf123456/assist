@@ -165,7 +165,7 @@
                             ]
 
                             var clump = {}
-                            clump['label'] = res[index]['Company']
+                            clump['label'] = res[index]['Company'] + "(₱ " + Number(parseFloat(res[index]['TotalCollection'])).toLocaleString() + ")"
                             clump['backgroundColor'] = res[index]['Color'] + "aa"
                             clump['borderColor'] = res[index]['Color']
                             clump['pointRadius'] = 3
