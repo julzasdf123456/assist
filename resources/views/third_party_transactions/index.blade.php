@@ -207,6 +207,41 @@
                             data: collectionSummaryChartData,
                             options: collectionSummaryChartOptions
                         })
+                    } else {
+                        var datum = []
+
+                        // console.log(datum)
+
+                        var collectionSummaryChartData = {
+                            labels: dates,
+                            datasets: datum
+                        }
+
+                        var collectionSummaryChartOptions = {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            legend: {
+                                display: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
+
+                        var collectionSummaryChart = new Chart(collectionSummaryChartCanvas, { 
+                            type: 'line',
+                            data: collectionSummaryChartData,
+                            options: collectionSummaryChartOptions
+                        })
                     }
                 },
                 error : function(err) {

@@ -452,6 +452,9 @@ class ThirdPartyTransactionsController extends AppBaseController
         $from = $year . "-" . $month . "-01";
         $to = date('Y-m-d', strtotime("last day of " . $from));
 
+        $lastDate = date('d', strtotime("last day of " . $from));
+        $lastDate = intval($lastDate);
+
         $data = DB::connection('sqlsrv')
             ->table('ThirdPartyTransactions')
             ->whereRaw("TRY_CAST(created_at AS DATE) BETWEEN '" . $from . "' AND '" . $to . "'")
@@ -485,10 +488,10 @@ class ThirdPartyTransactionsController extends AppBaseController
                 DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-25') AS Data25"),
                 DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-26') AS Data26"),
                 DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-27') AS Data27"),
-                DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-28') AS Data28"),
-                DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-29') AS Data29"),
-                DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-30') AS Data30"),
-                DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-31') AS Data31"),
+                $lastDate >= 28 ? DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-28') AS Data28") : DB::raw("'0' AS Data28"),
+                $lastDate >= 29 ? DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-29') AS Data29") : DB::raw("'0' AS Data29"),
+                $lastDate >= 30 ? DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-30') AS Data30") : DB::raw("'0' AS Data30"),
+                $lastDate >= 31 ? DB::raw("(SELECT SUM(TotalAmount) FROM ThirdPartyTransactions WHERE Company=ThirdPartyTransactions.Company AND TRY_CAST(created_at AS DATE)='" . $joined . "-31') AS Data31") : DB::raw("'0' AS Data31"),
             )
             ->groupBy('Company')
             ->get();
