@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AccountMasterController;
 use App\Http\Controllers\AccountLinksController;
+use App\Http\Controllers\ThirdPartyTransactionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,11 +54,12 @@ Route::resource('thirdPartyTokens', App\Http\Controllers\ThirdPartyTokensControl
 
 Route::resource('billsExtensions', App\Http\Controllers\BillsExtensionController::class);
 
-Route::get('/third_party_transactions/view-transactions/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'viewTransactions'])->name('thirdPartyTransactions.view-transactions');
-Route::get('/third_party_transactions/post-transactions', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'postTransactions'])->name('thirdPartyTransactions.post-transactions');
-Route::get('/third_party_transactions/mark-as-posted', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'markAsPosted'])->name('thirdPartyTransactions.mark-as-posted');
-Route::get('/third_party_transactions/posted-transactions', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'postedTransactions'])->name('thirdPartyTransactions.posted-transactions');
-Route::get('/third_party_transactions/view-posted-transactions/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'viewPostedTransactions'])->name('thirdPartyTransactions.view-posted-transactions');
-Route::get('/third_party_transactions/print-double-payments/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'printDoublePayments'])->name('thirdPartyTransactions.print-double-payments');
-Route::get('/third_party_transactions/print-posted-payments/{date}/{co}', [App\Http\Controllers\ThirdPartyTransactionsController::class, 'printPostedPayments'])->name('thirdPartyTransactions.print-posted-payments');
-Route::resource('thirdPartyTransactions', App\Http\Controllers\ThirdPartyTransactionsController::class);
+Route::get('/third_party_transactions/view-transactions/{date}/{co}', [ThirdPartyTransactionsController::class, 'viewTransactions'])->name('thirdPartyTransactions.view-transactions');
+Route::get('/third_party_transactions/post-transactions', [ThirdPartyTransactionsController::class, 'postTransactions'])->name('thirdPartyTransactions.post-transactions');
+Route::get('/third_party_transactions/mark-as-posted', [ThirdPartyTransactionsController::class, 'markAsPosted'])->name('thirdPartyTransactions.mark-as-posted');
+Route::get('/third_party_transactions/posted-transactions', [ThirdPartyTransactionsController::class, 'postedTransactions'])->name('thirdPartyTransactions.posted-transactions');
+Route::get('/third_party_transactions/view-posted-transactions/{date}/{co}', [ThirdPartyTransactionsController::class, 'viewPostedTransactions'])->name('thirdPartyTransactions.view-posted-transactions');
+Route::get('/third_party_transactions/print-double-payments/{date}/{co}', [ThirdPartyTransactionsController::class, 'printDoublePayments'])->name('thirdPartyTransactions.print-double-payments');
+Route::get('/third_party_transactions/print-posted-payments/{date}/{co}', [ThirdPartyTransactionsController::class, 'printPostedPayments'])->name('thirdPartyTransactions.print-posted-payments');
+Route::get('/third_party_transactions/get-posted-calendar-data', [ThirdPartyTransactionsController::class, 'getPostedCalendarData'])->name('thirdPartyTransactions.get-posted-calendar-data');
+Route::resource('thirdPartyTransactions', ThirdPartyTransactionsController::class);

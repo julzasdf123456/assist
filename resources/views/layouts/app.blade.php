@@ -36,6 +36,8 @@
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    <link rel="stylesheet" href="{{ asset('css/fullcalendar.min.css') }}">
+
     <style>
         .divider {
             width: 100%;
@@ -50,6 +52,10 @@
 
         .ico-tab-mini {
             margin-right: 4px;
+        }
+
+        .gone {
+            display: none;
         }
     </style>
 
@@ -159,6 +165,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js" integrity="sha512-J+763o/bd3r9iW+gFEqTaeyi+uAphmzkE/zU8FxY6iAvD3nQKXa+ZAWkBI9QS9QkYEKddQoiy0I5GDxKf/ORBA==" crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+<script src="{{ asset('js/fullcalendar.min.js') }}"></script>
+
+<script src="{{ asset('js/calendarfull.min.js') }}"></script>
 
 <script>
     $(function () {
