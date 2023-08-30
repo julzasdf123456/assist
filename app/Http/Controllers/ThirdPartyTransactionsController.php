@@ -420,4 +420,20 @@ class ThirdPartyTransactionsController extends AppBaseController
             'data' => $data
         ]);
     }
+
+    public function getPostedCalendarData(Request $request) {
+        $data = DB::connection('sqlsrv')
+            ->table('ThirdPartyTransactions')
+            ->select(
+                DB::raw("TRY_CAST(created_at AS DATE) AS DateCollected"),
+                'Company',
+                DB::raw("SUM(TotalAmount) AS TotalCollection"),
+                DB::raw("COUNT(id) AS NoOfCollection"),
+            )
+            ->groupByRaw(DB::raw("TRY_CAST(created_at AS DATE)"))
+            ->groupBy('Company')
+            ->get();
+
+        return response()->json($data, 200);
+    }
 }
