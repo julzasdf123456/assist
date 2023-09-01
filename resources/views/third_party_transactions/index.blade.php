@@ -41,7 +41,10 @@
                         @foreach ($thirdPartyTransactions as $item)
                             <tr>
                                 <td>{{ date('F d, Y', strtotime($item->DateOfTransaction)) }}</td>
-                                <td>{{ $item->Company }}</td>
+                                <td>
+                                    <div style="width: 12px; height: 12px; background-color: {{ $item->Color }}; display: inline-block; border-radius: 50%;"></div>
+                                    {{ $item->Company }}
+                                </td>
                                 <td class="text-right">{{ number_format($item->NumberOfTransactions) }}</td>
                                 <td class="text-right">{{ number_format($item->Total, 2) }}</td>
                                 <td>
