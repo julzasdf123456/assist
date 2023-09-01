@@ -63,4 +63,5 @@ Route::get('/third_party_transactions/print-double-payments/{date}/{co}', [Third
 Route::get('/third_party_transactions/print-posted-payments/{date}/{co}', [ThirdPartyTransactionsController::class, 'printPostedPayments'])->name('thirdPartyTransactions.print-posted-payments');
 Route::get('/third_party_transactions/get-posted-calendar-data', [ThirdPartyTransactionsController::class, 'getPostedCalendarData'])->name('thirdPartyTransactions.get-posted-calendar-data');
 Route::get('/third_party_transactions/get-graph-data', [ThirdPartyTransactionsController::class, 'getGraphData'])->name('thirdPartyTransactions.get-graph-data');
+Route::get('/third_party_transactions/get-graph-data-yearly', [ThirdPartyTransactionsController::class, 'getGraphDataYearly'])->name('thirdPartyTransactions.get-graph-data-yearly');
 Route::resource('thirdPartyTransactions', ThirdPartyTransactionsController::class);

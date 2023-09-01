@@ -54,18 +54,18 @@
             </div>
         </div>
 
-        {{-- DASHBOARD --}}
+        {{-- DASHBOARD DAILY --}}
         <div class="card shadow-none">
             <div class="card-header">
-                <span class="card-title"><i class="fas fa-chart-line ico-tab"></i>Monthly Collection Trend</span>
+                <span class="card-title"><i class="fas fa-chart-line ico-tab"></i>Daily Collection Trend</span>
 
                 <div>
                     <button id="filter-btn" class="btn btn-primary btn-sm float-right" title="Filter" style="margin-left: 5px;"><i class="fas fa-filter"></i></button>
                     {{-- YEAR --}}
-                    <input id="year-select" type="number" class="form-control form-control-sm float-right" placeholder="Year" value="{{ date('Y') }}" style="width: 120px; margin-left: 5px;">
+                    <input id="year-select" type="number" class="form-control form-control-sm float-right" placeholder="Year" value="{{ date('Y') }}" style="width: 100px; margin-left: 5px;">
 
                     {{-- MONTHS --}}
-                    <select id="month-select" style="width: 100px;" class="form-control form-control-sm float-right">
+                    <select id="month-select" style="width: 120px;" class="form-control form-control-sm float-right">
                         <option value="01" {{ date('m')=='01' ? 'selected' : '' }}>January</option>
                         <option value="02" {{ date('m')=='02' ? 'selected' : '' }}>February</option>
                         <option value="03" {{ date('m')=='03' ? 'selected' : '' }}>March</option>
@@ -79,6 +79,8 @@
                         <option value="11" {{ date('m')=='11' ? 'selected' : '' }}>November</option>
                         <option value="12" {{ date('m')=='12' ? 'selected' : '' }}>December</option>
                     </select>
+
+                    <label for="" class="text-muted float-right" style="margin-right: 8px;">Parameters</label>
                 </div>
             </div>
             <div class="card-body">
@@ -91,6 +93,34 @@
                 </div>
             </div>
         </div>
+
+        {{-- DASHBOARD MONTHLY --}}
+        <div class="card shadow-none">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-calendar ico-tab"></i>Monthy Collection Trend</span>
+
+                <div>
+                    <button id="filter-btn-year" class="btn btn-primary btn-sm float-right" title="Filter" style="margin-left: 5px;"><i class="fas fa-filter"></i></button>
+                    {{-- YEAR --}}
+                    <input id="year-input" type="number" class="form-control form-control-sm float-right" placeholder="Year" value="{{ date('Y') }}" style="width: 100px; margin-left: 5px;">
+
+                    <label for="" class="text-muted float-right" style="margin-right: 8px;">Year</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <span>
+                    <span id="year-label" style="font-size: 1.4em; font-weight: bold;">Year {{ date('Y') }}</span>
+                    <span style="color: #878787;">Monthly Trend</span>
+                </span>
+                <div id="graph-holder-year">
+                    <canvas id="collection-summary-chart-yearly" style="height: 440px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 20px; width: 100%;">
+
+        </div>
     </div>
 
 @endsection
@@ -99,12 +129,20 @@
     <script>
         $(document).ready(function() {
             graphCollectionSummary($('#month-select').val(), $('#year-select').val())
+            graphCollectionYearly($('#year-input').val())
 
             $('#filter-btn').on('click', function() {
                 $('#month-label').text($("#month-select option:selected").text() + " " + $('#year-select').val())
 
                 graphCollectionSummary($('#month-select').val(), $('#year-select').val())
             })
+
+            $('#filter-btn-year').on('click', function() {
+                $('#year-label').text("Year " + $('#year-input').val())
+
+                graphCollectionYearly($('#year-input').val())
+            })
+
         })
 
         function graphCollectionSummary(month, year) {
@@ -217,6 +255,129 @@
 
                         var collectionSummaryChartData = {
                             labels: dates,
+                            datasets: datum
+                        }
+
+                        var collectionSummaryChartOptions = {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            legend: {
+                                display: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
+
+                        var collectionSummaryChart = new Chart(collectionSummaryChartCanvas, { 
+                            type: 'line',
+                            data: collectionSummaryChartData,
+                            options: collectionSummaryChartOptions
+                        })
+                    }
+                },
+                error : function(err) {
+                    console.log(err)
+                } 
+            })
+        }
+
+        function graphCollectionYearly(year) {
+            $('#collection-summary-chart-yearly').remove()
+            $('#graph-holder-year').append('<canvas id="collection-summary-chart-yearly" style="height: 440px;"></canvas>')
+
+            var collectionSummaryChartCanvas = $('#collection-summary-chart-yearly').get(0).getContext('2d')
+            
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+            $.ajax({
+                url : "{{ route('thirdPartyTransactions.get-graph-data-yearly') }}",
+                type : 'GET',
+                data : {
+                    Year : year
+                },
+                success : function(res) {
+                    if (!jQuery.isEmptyObject(res)) {
+                        var datum = []
+
+                        $.each(res, function(index, element) {
+                            var plotPoints = [
+                                jQuery.isEmptyObject(res[index]['January']) ? 0 : Math.round((parseFloat(res[index]['January']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['February']) ? 0 : Math.round((parseFloat(res[index]['February']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['March']) ? 0 : Math.round((parseFloat(res[index]['March']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['April']) ? 0 : Math.round((parseFloat(res[index]['April']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['May']) ? 0 : Math.round((parseFloat(res[index]['May']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['June']) ? 0 : Math.round((parseFloat(res[index]['June']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['July']) ? 0 : Math.round((parseFloat(res[index]['July']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['August']) ? 0 : Math.round((parseFloat(res[index]['August']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['September']) ? 0 : Math.round((parseFloat(res[index]['September']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['October']) ? 0 : Math.round((parseFloat(res[index]['October']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['November']) ? 0 : Math.round((parseFloat(res[index]['November']) + Number.EPSILON) * 100) / 100,
+                                jQuery.isEmptyObject(res[index]['December']) ? 0 : Math.round((parseFloat(res[index]['December']) + Number.EPSILON) * 100) / 100,
+                            ]
+
+                            var clump = {}
+                            clump['label'] = res[index]['Company'] + "(₱ " + Number(parseFloat(res[index]['TotalCollection'])).toLocaleString() + ")"
+                            clump['backgroundColor'] = res[index]['Color'] + "aa"
+                            clump['borderColor'] = res[index]['Color']
+                            clump['pointRadius'] = 3
+                            clump['pointColor'] = res[index]['Color']
+                            clump['pointStrokeColor'] = 'rgba(60,141,188,1)'
+                            clump['pointHighlightFill'] = '#fff'
+                            clump['pointHighlightStroke'] = 'rgba(60,141,188,1)'
+                            clump['data'] = plotPoints
+
+                            datum.push(clump)
+                        })
+
+                        // console.log(datum)
+
+                        var collectionSummaryChartData = {
+                            labels: months,
+                            datasets: datum
+                        }
+
+                        var collectionSummaryChartOptions = {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            legend: {
+                                display: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
+
+                        var collectionSummaryChart = new Chart(collectionSummaryChartCanvas, { 
+                            type: 'line',
+                            data: collectionSummaryChartData,
+                            options: collectionSummaryChartOptions
+                        })
+                    } else {
+                        var datum = []
+
+                        // console.log(datum)
+
+                        var collectionSummaryChartData = {
+                            labels: months,
                             datasets: datum
                         }
 
