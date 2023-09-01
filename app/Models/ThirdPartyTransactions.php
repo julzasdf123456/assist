@@ -96,5 +96,7 @@ class ThirdPartyTransactions extends Model
         'Status' => 'nullable|string'
     ];
 
-    
+    public static function getLastDayOf($month, $year) {
+        return date('Y-m-d', strtotime('last day of ' . $month . ' ' . $year));
+    }
 }
