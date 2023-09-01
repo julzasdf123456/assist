@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h4>Unposted Third Party API Transactions</h4>
+                    <h4>API Dashboard</h4>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-success btn-sm float-right"
