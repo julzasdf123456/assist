@@ -46,7 +46,7 @@
                                     {{ $item->Company }}
                                 </td>
                                 <td class="text-right">{{ number_format($item->NumberOfTransactions) }}</td>
-                                <td class="text-right">{{ number_format($item->Total, 2) }}</td>
+                                <td class="text-right text-primary">₱  <strong>{{ number_format($item->Total, 2) }}</strong></td>
                                 <td>
                                     <a href="{{ route('thirdPartyTransactions.view-transactions', [$item->DateOfTransaction, $item->Company]) }}" class="btn btn-sm btn-primary float-right"><i class="fas fa-eye"></i> View</a>
                                 </td>
