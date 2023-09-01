@@ -39,6 +39,7 @@ class ThirdPartyTransactionsController extends AppBaseController
         $thirdPartyTransactions = DB::table('ThirdPartyTransactions')
             ->select(
                 DB::raw("TRY_CAST(created_at AS DATE) As DateOfTransaction"),
+                DB::raw("(SELECT TOP 1 ColorHex FROM ThirdPartytokens WHERE Company=ThirdPartyTransactions.Company) AS Color"),
                 "Company",
                 DB::raw("COUNT(id) AS NumberOfTransactions"),
                 DB::raw("SUM(TRY_CAST(TotalAmount AS DECIMAL(15,2))) AS Total")
