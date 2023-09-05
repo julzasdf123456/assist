@@ -116,6 +116,14 @@
             fetchCalendarData(moment().format('MMMM YYYY'))
         })
 
+        function companyAlias(company) {
+            if (company == 'Cooperative Bank of Bohol') {
+                return 'CBB'
+            } else {
+                return company
+            }
+        }
+
         function fetchCalendarData(month) {
             scheds = []
             // QUERY SCHEDS
@@ -131,9 +139,9 @@
                         var obj = {}
                         var timestamp = moment(res[index]['DateCollected'], 'YYYY-MM-DD')
 
-                        obj['title'] = res[index]['Company'] + ' (₱ ' + Number(parseFloat(res[index]['TotalCollection'])).toLocaleString() + ' - ' + res[index]['NoOfCollection'] + ')'
-                        obj['backgroundColor'] = '#66bb6a';
-                        obj['borderColor'] = '#66bb6a';
+                        obj['title'] = companyAlias(res[index]['Company']) + ' (₱ ' + Number(parseFloat(res[index]['TotalCollection'])).toLocaleString() + ' - ' + res[index]['NoOfCollection'] + ')'
+                        obj['backgroundColor'] = res[index]['Color'];
+                        obj['borderColor'] = res[index]['Color'];
 
                         obj['extendedProps'] = {
                            CollectionDate : res[index]['DateCollected'],
