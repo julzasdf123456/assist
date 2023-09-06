@@ -26,14 +26,14 @@
 <li class="nav-item">
     <a href="{{ route('thirdPartyTokens.index') }}"
        class="nav-link {{ Request::is('thirdPartyTokens*') ? 'active' : '' }}">
-       <i class="fas fa-code ico-tab"></i><p>Third Party Tokens</p>
+       <i class="fas fa-code ico-tab"></i><p>API Tokens</p>
     </a>
 </li>
 
 <li class="nav-item">
     <a href="{{ route('thirdPartyTransactions.index') }}"
        class="nav-link {{ Request::is('thirdPartyTransactions*') ? 'active' : '' }}">
-       <i class="fas fa-coins ico-tab"></i><p>Third Party Collection</p>
+       <i class="fas fa-coins ico-tab"></i><p>API Collection</p>
     </a>
 </li>
 
