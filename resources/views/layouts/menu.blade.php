@@ -23,12 +23,12 @@
 </li>
 
 
-<li class="nav-item">
+{{-- <li class="nav-item">
     <a href="{{ route('thirdPartyTokens.index') }}"
        class="nav-link {{ Request::is('thirdPartyTokens*') ? 'active' : '' }}">
        <i class="fas fa-code ico-tab"></i><p>API Tokens</p>
     </a>
-</li>
+</li> --}}
 
 <li class="nav-item">
     <a href="{{ route('thirdPartyTransactions.index') }}"

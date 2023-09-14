@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h4>Third Party Tokens</h4>
+                    <h4>API Third-party Collection Partners</h4>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right"
@@ -23,7 +23,7 @@
 
         <div class="clearfix"></div>
 
-        <div class="card">
+        <div class="card shadow-none">
             <div class="card-body p-0">
                 @include('third_party_tokens.table')
 
