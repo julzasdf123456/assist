@@ -8,10 +8,18 @@
                     <h4>API Dashboard</h4>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-success btn-sm float-right"
-                       href="{{ route('thirdPartyTransactions.posted-transactions') }}">
-                        View Posted Transactions
-                    </a>
+                    <div class="btn-group float-right">
+                        <a class="btn btn-success btn-sm"
+                           href="{{ route('thirdPartyTransactions.posted-transactions') }}">
+                            View Posted Transactions
+                        </a>
+                        <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" href="{{ route('thirdPartyTokens.index') }}">View Collection Partners</a>
+                        </div>
+                      </div>
                 </div>
             </div>
         </div>

@@ -16,9 +16,9 @@
         <tbody>
         @foreach($thirdPartyTokens as $thirdPartyTokens)
             <tr>
-                <td>{{ $thirdPartyTokens->Company }}</td>
-            <td>{{ $thirdPartyTokens->AccessKey }}</td>
-            <td>
+                <td><a href="{{ route('thirdPartyTokens.show', [$thirdPartyTokens->id]) }}"><strong>{{ $thirdPartyTokens->Company }}</strong></a></td>
+                <td>{{ $thirdPartyTokens->AccessKey }}</td>
+                <td>
                 {{ $thirdPartyTokens->Token }}
                 {{-- <a href="{{ route('thirdPartyTokens.regenerate-token', [$thirdPartyTokens->id]) }}" class="btn btn-xs btn-info float-right"><i class="fas fa-sync ico-tab-mini"></i>Re-generate</a> --}}
             </td>

@@ -9,6 +9,7 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\ThirdPartyTokens;
 use App\Models\IDGenerator;
+use Illuminate\Support\Facades\DB;
 use Flash;
 use Response;
 
@@ -77,13 +78,27 @@ class ThirdPartyTokensController extends AppBaseController
     {
         $thirdPartyTokens = $this->thirdPartyTokensRepository->find($id);
 
+        $thirdPartyTransactions = DB::table('ThirdPartyTransactions')
+            ->select(
+                DB::raw("TRY_CAST(created_at AS DATE) As DateOfTransaction"),
+                DB::raw("COUNT(id) AS NumberOfTransactions"),
+                DB::raw("SUM(TRY_CAST(TotalAmount AS DECIMAL(15,2))) AS Total")
+            )
+            ->whereRaw("Status IS NOT NULL AND Company='" . $thirdPartyTokens->Company . "'")
+            ->groupByRaw("TRY_CAST(created_at AS DATE)")
+            ->orderByRaw("TRY_CAST(created_at AS DATE) DESC")
+            ->get();
+
         if (empty($thirdPartyTokens)) {
             Flash::error('Third Party Tokens not found');
 
             return redirect(route('thirdPartyTokens.index'));
         }
 
-        return view('third_party_tokens.show')->with('thirdPartyTokens', $thirdPartyTokens);
+        return view('third_party_tokens.show', [
+            'thirdPartyTokens' => $thirdPartyTokens,
+            'thirdPartyTransactions' => $thirdPartyTransactions,
+        ]);
     }
 
     /**
