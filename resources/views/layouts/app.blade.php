@@ -124,7 +124,7 @@
         <div class="float-right d-none d-sm-block">
             <b>Version</b> 2.1
         </div>
-        <strong>Copyright &copy; {{ date('Y') }} <a href="www.boheco1.com">BOHECO </a> | </strong> All rights reserved.
+        <strong>Copyright &copy; {{ date('Y') }} <a href="www.boheco1.com">BOHECO I</a> | </strong> All rights reserved.
     </footer>
 </div>
 
