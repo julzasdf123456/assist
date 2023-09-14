@@ -508,27 +508,69 @@ class ThirdPartyTransactionsController extends AppBaseController
         $from = $year . "-01-01";
         $to = date('Y-m-d', strtotime("last day of December " . $year));
 
+        $company = $request['Company'];
+
+        if ($company == 'All') {
+            $data = DB::connection('sqlsrv')
+                ->table('ThirdPartyTransactions')
+                ->whereRaw("TRY_CAST(created_at AS DATE) BETWEEN '" . $from . "' AND '" . $to . "'")
+                ->select(
+                    'Company',
+                    DB::raw("SUM(TotalAmount) AS TotalCollection"),
+                    DB::raw("(SELECT TOP 1 ColorHex FROM ThirdPartytokens WHERE Company=ThirdPartyTransactions.Company) AS Color"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-01-01' AND '" . ThirdPartyTransactions::getLastDayOf('January', $year) . "') AS January"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-02-01' AND '" . ThirdPartyTransactions::getLastDayOf('February', $year) . "') AS February"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-03-01' AND '" . ThirdPartyTransactions::getLastDayOf('March', $year) . "') AS March"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-04-01' AND '" . ThirdPartyTransactions::getLastDayOf('April', $year) . "') AS April"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-05-01' AND '" . ThirdPartyTransactions::getLastDayOf('May', $year) . "') AS May"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-06-01' AND '" . ThirdPartyTransactions::getLastDayOf('June', $year) . "') AS June"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-07-01' AND '" . ThirdPartyTransactions::getLastDayOf('July', $year) . "') AS July"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-08-01' AND '" . ThirdPartyTransactions::getLastDayOf('August', $year) . "') AS August"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-09-01' AND '" . ThirdPartyTransactions::getLastDayOf('September', $year) . "') AS September"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-10-01' AND '" . ThirdPartyTransactions::getLastDayOf('October', $year) . "') AS October"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-11-01' AND '" . ThirdPartyTransactions::getLastDayOf('November', $year) . "') AS November"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-12-01' AND '" . ThirdPartyTransactions::getLastDayOf('December', $year) . "') AS December"),
+                )
+                ->groupBy('Company')
+                ->get();
+        } else {
+            $data = DB::connection('sqlsrv')
+                ->table('ThirdPartyTransactions')
+                ->whereRaw("TRY_CAST(created_at AS DATE) BETWEEN '" . $from . "' AND '" . $to . "' AND Company='" . $company . "'")
+                ->select(
+                    'Company',
+                    DB::raw("SUM(TotalAmount) AS TotalCollection"),
+                    DB::raw("(SELECT TOP 1 ColorHex FROM ThirdPartytokens WHERE Company=ThirdPartyTransactions.Company) AS Color"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-01-01' AND '" . ThirdPartyTransactions::getLastDayOf('January', $year) . "') AS January"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-02-01' AND '" . ThirdPartyTransactions::getLastDayOf('February', $year) . "') AS February"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-03-01' AND '" . ThirdPartyTransactions::getLastDayOf('March', $year) . "') AS March"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-04-01' AND '" . ThirdPartyTransactions::getLastDayOf('April', $year) . "') AS April"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-05-01' AND '" . ThirdPartyTransactions::getLastDayOf('May', $year) . "') AS May"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-06-01' AND '" . ThirdPartyTransactions::getLastDayOf('June', $year) . "') AS June"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-07-01' AND '" . ThirdPartyTransactions::getLastDayOf('July', $year) . "') AS July"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-08-01' AND '" . ThirdPartyTransactions::getLastDayOf('August', $year) . "') AS August"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-09-01' AND '" . ThirdPartyTransactions::getLastDayOf('September', $year) . "') AS September"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-10-01' AND '" . ThirdPartyTransactions::getLastDayOf('October', $year) . "') AS October"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-11-01' AND '" . ThirdPartyTransactions::getLastDayOf('November', $year) . "') AS November"),
+                    DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-12-01' AND '" . ThirdPartyTransactions::getLastDayOf('December', $year) . "') AS December"),
+                )
+                ->groupBy('Company')
+                ->get();
+        }
+
+        return response()->json($data, 200);
+    }
+
+    public function getCompanyCalendarActivity(Request $request) {
         $data = DB::connection('sqlsrv')
             ->table('ThirdPartyTransactions')
-            ->whereRaw("TRY_CAST(created_at AS DATE) BETWEEN '" . $from . "' AND '" . $to . "'")
+            ->whereRaw("Status IS NOT NULL AND Company='" . $request['Company'] . "'")
             ->select(
-                'Company',
+                DB::raw("TRY_CAST(created_at AS DATE) AS DateCollected"),
                 DB::raw("SUM(TotalAmount) AS TotalCollection"),
-                DB::raw("(SELECT TOP 1 ColorHex FROM ThirdPartytokens WHERE Company=ThirdPartyTransactions.Company) AS Color"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-01-01' AND '" . ThirdPartyTransactions::getLastDayOf('January', $year) . "') AS January"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-02-01' AND '" . ThirdPartyTransactions::getLastDayOf('February', $year) . "') AS February"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-03-01' AND '" . ThirdPartyTransactions::getLastDayOf('March', $year) . "') AS March"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-04-01' AND '" . ThirdPartyTransactions::getLastDayOf('April', $year) . "') AS April"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-05-01' AND '" . ThirdPartyTransactions::getLastDayOf('May', $year) . "') AS May"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-06-01' AND '" . ThirdPartyTransactions::getLastDayOf('June', $year) . "') AS June"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-07-01' AND '" . ThirdPartyTransactions::getLastDayOf('July', $year) . "') AS July"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-08-01' AND '" . ThirdPartyTransactions::getLastDayOf('August', $year) . "') AS August"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-09-01' AND '" . ThirdPartyTransactions::getLastDayOf('September', $year) . "') AS September"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-10-01' AND '" . ThirdPartyTransactions::getLastDayOf('October', $year) . "') AS October"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-11-01' AND '" . ThirdPartyTransactions::getLastDayOf('November', $year) . "') AS November"),
-                DB::raw("(SELECT SUM(a.TotalAmount) FROM ThirdPartyTransactions a WHERE a.Company=ThirdPartyTransactions.Company AND TRY_CAST(a.created_at AS DATE) BETWEEN '" . $year . "-12-01' AND '" . ThirdPartyTransactions::getLastDayOf('December', $year) . "') AS December"),
+                DB::raw("COUNT(id) AS NoOfCollection"),
             )
-            ->groupBy('Company')
+            ->groupByRaw(DB::raw("TRY_CAST(created_at AS DATE)"))
             ->get();
 
         return response()->json($data, 200);

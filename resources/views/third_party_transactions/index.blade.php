@@ -314,7 +314,8 @@
                 url : "{{ route('thirdPartyTransactions.get-graph-data-yearly') }}",
                 type : 'GET',
                 data : {
-                    Year : year
+                    Year : year,
+                    Company : 'All'
                 },
                 success : function(res) {
                     if (!jQuery.isEmptyObject(res)) {
