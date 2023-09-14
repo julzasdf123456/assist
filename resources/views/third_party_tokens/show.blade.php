@@ -48,7 +48,7 @@
         {{-- COLLECTION HISTORY --}}
         <div class="card shadow-none" style="height: 50vh;">
             <div class="card-header">
-                <span class="card-title"><i class="fas fa-history ico-tab"></i>Collection History</span>
+                <span class="card-title"><i class="fas fa-history ico-tab"></i>{{ $thirdPartyTokens->Company }}  Collection History</span>
             </div>
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover table-bordered table-sm">
@@ -91,7 +91,7 @@
         {{-- STATS --}}
         <div class="card shadow-none">
             <div class="card-header border-0">
-                <span class="card-title"><i class="fas fa-chart-line ico-tab"></i>Collection Stats</span>
+                <span class="card-title"><i class="fas fa-chart-line ico-tab"></i>{{ $thirdPartyTokens->Company }}  Collection Stats</span>
             </div>
             <div class="card-body">
                 <div class="row">
