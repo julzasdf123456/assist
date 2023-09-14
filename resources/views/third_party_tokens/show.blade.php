@@ -129,6 +129,57 @@
                     <div class="col-lg-4 col-md-12">
                         <div id="calendar" style="height: 150px"></div>
                     </div>
+
+                    {{-- MONTHLY SUMMARY --}}
+                    <div class="col-lg-12" style="margin-top: 20px;">
+                        <table class="table table-sm table-bordered table-hover">
+                            <tr>
+                                <th></th>
+                                <th>January</th>
+                                <th>February</th>
+                                <th>March</th>
+                                <th>April</th>
+                                <th>May</th>
+                                <th>June</th>
+                                <th>July</th>
+                                <th>August</th>
+                                <th>September</th>
+                                <th>October</th>
+                                <th>November</th>
+                                <th>December</th>
+                            </tr>
+                            <tr>
+                                <th>Collection Count</th>
+                                <td class="text-right" id="JanuaryCount"></td>
+                                <td class="text-right" id="FebruaryCount"></td>
+                                <td class="text-right" id="MarchCount"></td>
+                                <td class="text-right" id="AprilCount"></td>
+                                <td class="text-right" id="MayCount"></td>
+                                <td class="text-right" id="JuneCount"></td>
+                                <td class="text-right" id="JulyCount"></td>
+                                <td class="text-right" id="AugustCount"></td>
+                                <td class="text-right" id="SeptemberCount"></td>
+                                <td class="text-right" id="OctoberCount"></td>
+                                <td class="text-right" id="NovemberCount"></td>
+                                <td class="text-right" id="DecemberCount"></td>
+                            </tr>
+                            <tr>
+                                <th>Collection Amount</th>
+                                <td class="text-right" id="JanuaryAmount"></td>
+                                <td class="text-right" id="FebruaryAmount"></td>
+                                <td class="text-right" id="MarchAmount"></td>
+                                <td class="text-right" id="AprilAmount"></td>
+                                <td class="text-right" id="MayAmount"></td>
+                                <td class="text-right" id="JuneAmount"></td>
+                                <td class="text-right" id="JulyAmount"></td>
+                                <td class="text-right" id="AugustAmount"></td>
+                                <td class="text-right" id="SeptemberAmount"></td>
+                                <td class="text-right" id="OctoberAmount"></td>
+                                <td class="text-right" id="NovemberAmount"></td>
+                                <td class="text-right" id="DecemberAmount"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -250,6 +301,34 @@
                                 jQuery.isEmptyObject(res[index]['November']) ? 0 : Math.round((parseFloat(res[index]['November']) + Number.EPSILON) * 100) / 100,
                                 jQuery.isEmptyObject(res[index]['December']) ? 0 : Math.round((parseFloat(res[index]['December']) + Number.EPSILON) * 100) / 100,
                             ]
+
+                            // ADD COUNT
+                            $('#JanuaryCount').text(jQuery.isEmptyObject(res[index]['JanuaryCount']) ? '' : Number(parseFloat(res[index]['JanuaryCount'])).toLocaleString())
+                            $('#FebruaryCount').text(jQuery.isEmptyObject(res[index]['FebruaryCount']) ? '' : Number(parseFloat(res[index]['FebruaryCount'])).toLocaleString())
+                            $('#MarchCount').text(jQuery.isEmptyObject(res[index]['MarchCount']) ? '' : Number(parseFloat(res[index]['MarchCount'])).toLocaleString())
+                            $('#AprilCount').text(jQuery.isEmptyObject(res[index]['AprilCount']) ? '' : Number(parseFloat(res[index]['AprilCount'])).toLocaleString())
+                            $('#MayCount').text(jQuery.isEmptyObject(res[index]['MayCount']) ? '' : Number(parseFloat(res[index]['MayCount'])).toLocaleString())
+                            $('#JuneCount').text(jQuery.isEmptyObject(res[index]['JuneCount']) ? '' : Number(parseFloat(res[index]['JuneCount'])).toLocaleString())
+                            $('#JulyCount').text(jQuery.isEmptyObject(res[index]['JulyCount']) ? '' : Number(parseFloat(res[index]['JulyCount'])).toLocaleString())
+                            $('#AugustCount').text(jQuery.isEmptyObject(res[index]['AugustCount']) ? '' : Number(parseFloat(res[index]['AugustCount'])).toLocaleString())
+                            $('#SeptemberCount').text(jQuery.isEmptyObject(res[index]['SeptemberCount']) ? '' : Number(parseFloat(res[index]['SeptemberCount'])).toLocaleString())
+                            $('#OctoberCount').text(jQuery.isEmptyObject(res[index]['OctoberCount']) ? '' : Number(parseFloat(res[index]['OctoberCount'])).toLocaleString())
+                            $('#NovemberCount').text(jQuery.isEmptyObject(res[index]['NovemberCount']) ? '' : Number(parseFloat(res[index]['NovemberCount'])).toLocaleString())
+                            $('#DecemberCount').text(jQuery.isEmptyObject(res[index]['DecemberCount']) ? '' : Number(parseFloat(res[index]['DecemberCount'])).toLocaleString())
+
+                            // ADD AMOUNT
+                            $('#JanuaryAmount').text(jQuery.isEmptyObject(res[index]['January']) ? '' : Number(parseFloat(res[index]['January'])).toLocaleString())
+                            $('#FebruaryAmount').text(jQuery.isEmptyObject(res[index]['February']) ? '' : Number(parseFloat(res[index]['February'])).toLocaleString())
+                            $('#MarchAmount').text(jQuery.isEmptyObject(res[index]['March']) ? '' : Number(parseFloat(res[index]['March'])).toLocaleString())
+                            $('#AprilAmount').text(jQuery.isEmptyObject(res[index]['April']) ? '' : Number(parseFloat(res[index]['April'])).toLocaleString())
+                            $('#MayAmount').text(jQuery.isEmptyObject(res[index]['May']) ? '' : Number(parseFloat(res[index]['May'])).toLocaleString())
+                            $('#JuneAmount').text(jQuery.isEmptyObject(res[index]['June']) ? '' : Number(parseFloat(res[index]['June'])).toLocaleString())
+                            $('#JulyAmount').text(jQuery.isEmptyObject(res[index]['July']) ? '' : Number(parseFloat(res[index]['July'])).toLocaleString())
+                            $('#AugustAmount').text(jQuery.isEmptyObject(res[index]['August']) ? '' : Number(parseFloat(res[index]['August'])).toLocaleString())
+                            $('#SeptemberAmount').text(jQuery.isEmptyObject(res[index]['September']) ? '' : Number(parseFloat(res[index]['September'])).toLocaleString())
+                            $('#OctoberAmount').text(jQuery.isEmptyObject(res[index]['October']) ? '' : Number(parseFloat(res[index]['October'])).toLocaleString())
+                            $('#NovemberAmount').text(jQuery.isEmptyObject(res[index]['November']) ? '' : Number(parseFloat(res[index]['November'])).toLocaleString())
+                            $('#DecemberAmount').text(jQuery.isEmptyObject(res[index]['December']) ? '' : Number(parseFloat(res[index]['December'])).toLocaleString())
 
                             var clump = {}
                             // clump['label'] = res[index]['Company'] + "(₱ " + Number(parseFloat(res[index]['TotalCollection'])).toLocaleString() + ")"
