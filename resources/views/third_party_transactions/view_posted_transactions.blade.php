@@ -1,3 +1,7 @@
+@php
+    use App\Models\Users;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -14,7 +18,7 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="card shadow-none" style="height: 75vh;">
+            <div class="card shadow-none" style="height: 65vh;">
                 <div class="card-header">
                     <span class="card-title">Logged Collection <span class="text-success">({{ count($data) }} payments)</span></span>
 
@@ -26,6 +30,7 @@
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover table-bordered table-sm">
                         <thead>
+                            <th>#</th>
                             <th>Account No</th>
                             <th>Billing Mo.</th>
                             <th>Ref. No</th>
@@ -42,9 +47,11 @@
                         <tbody>
                             @php
                                 $total = 0;
+                                $i = 1;
                             @endphp
                             @foreach ($data as $item)
-                                <tr>
+                                <tr class="{{ $item['Status']=='DOUBLE PAYMENTS' ? 'bg-danger' : '' }}">
+                                    <td>{{ $i }}</td>
                                     <td>{{ $item['AccountNumber'] }}</td>
                                     <td>{{ date('M Y', strtotime($item['ServicePeriodEnd'])) }}</td>
                                     <td>{{ $item['RefNo'] }}</td>
@@ -60,6 +67,7 @@
                                 </tr>
                                 @php
                                     $total += is_numeric($item['TotalAmount']) ? floatval($item['TotalAmount']) : 0;
+                                    $i++;
                                 @endphp
                             @endforeach
                             <tr>
@@ -73,7 +81,41 @@
                     </table>
                 </div>  
                 <div class="card-footer">
-                    {{-- <button class="btn btn-default float-right" onclick="markAsPosted()">Mark as Posted</button> --}}
+                    @if (Auth::user()->username == 'julz')
+                        <button class="btn btn-default float-right" onclick="markAsPosted()">Mark as Posted</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card shadow-none">
+                <div class="card-body">
+                    @php
+                        $totalDp = 0;
+                        foreach ($dps as $item) {
+                            $totalDp += $item->TotalAmount;
+                        }
+                    @endphp
+                    
+                    <table class="table table-bordered">
+                        <thead>
+                            <th class="text-center">TOTAL NO. OF PAYEES</th>
+                            <th class="text-center">TOTAL DOUBLE<br>PAYMENT TRANSACTIONS</th>
+                            <th class="text-center">TOTAL POSTED</th>
+                            <th class="text-center">TOTAL DOUBLE<br>PAYMENT AMOUNT</th>
+                            <th class="text-center">TOTAL AMOUNT<br>(EXC. DOUBLE PAYMENTS)</th>
+                            <th class="text-center">TOTAL AMOUNT<br>(INC. DOUBLE PAYMENTS)</th>
+                        </thead>
+                        <tbody>
+                            <th class="text-center">{{ count($data) }}</th>
+                            <th class="text-center">{{ count($dps) }}</th>
+                            <th class="text-center">{{ count($data) - count($dps) }}</th>
+                            <th class="text-center">{{ number_format($totalDp, 2) }}</th>
+                            <th class="text-center">{{ number_format($total - $totalDp, 2) }}</th>
+                            <th class="text-center">{{ number_format($total, 2) }}</th>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

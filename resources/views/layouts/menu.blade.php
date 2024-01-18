@@ -1,18 +1,14 @@
+@php
+    use App\Models\Users;
+@endphp
+
+@if (in_array(Auth::user()->username, Users::adminUsernames()))
 <li class="nav-item">
     <a href="{{ route('users.index') }}"
        class="nav-link {{ Request::is('users*') ? 'active' : '' }}">
         <i class="fas fa-users ico-tab"></i><p>Registered Users</p>
     </a>
 </li>
-
-<!-- 
-<li class="nav-item">
-    <a href="{{ route('accountMasters.index') }}"
-       class="nav-link {{ Request::is('accountMasters*') ? 'active' : '' }}">
-        <p>Account Masters</p>
-    </a>
-</li> -->
-
 
 
 <li class="nav-item">
@@ -21,6 +17,15 @@
        <i class="fas fa-bell ico-tab"></i><p>Notifiers</p>
     </a>
 </li>
+@endif
+
+<!-- 
+<li class="nav-item">
+    <a href="{{ route('accountMasters.index') }}"
+       class="nav-link {{ Request::is('accountMasters*') ? 'active' : '' }}">
+        <p>Account Masters</p>
+    </a>
+</li> -->
 
 
 {{-- <li class="nav-item">

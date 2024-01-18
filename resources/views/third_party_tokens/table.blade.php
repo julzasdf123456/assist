@@ -1,5 +1,6 @@
 @php
     use App\Models\IDGenerator;
+    use App\Models\Users;
 @endphp
 
 <div class="table-responsive">
@@ -32,9 +33,11 @@
                     <a href="{{ route('thirdPartyTokens.show', [$thirdPartyTokens->id]) }}" class='btn btn-default btn-xs'>
                         <i class="far fa-eye"></i>
                     </a>
+                    @if (in_array(Auth::user()->username, Users::adminUsernames()))
                     <a href="{{ route('thirdPartyTokens.edit', [$thirdPartyTokens->id]) }}" class='btn btn-default btn-xs'>
                         <i class="far fa-edit"></i>
                     </a>
+                    @endif
                     {{-- {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!} --}}
                 </div>
                 {!! Form::close() !!}

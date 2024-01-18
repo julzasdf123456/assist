@@ -1,3 +1,7 @@
+@php
+    use App\Models\Users;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -78,9 +82,12 @@
                     </table>
                 </div>  
                 <div class="card-footer">
-                    <button class="btn btn-success" onclick="post()">Post</button>
+                    @if (in_array(Auth::user()->username, Users::adminUsernames()))
+                        <button class="btn btn-success" onclick="post()">Post</button>
 
-                    <button class="btn btn-default float-right" onclick="markAsPosted()">Mark as Posted</button>
+                        <button class="btn btn-default float-right" onclick="markAsPosted()">Mark as Posted</button>
+                    @endif
+                    
                 </div>
             </div>
         </div>

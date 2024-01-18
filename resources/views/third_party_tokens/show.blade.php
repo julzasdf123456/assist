@@ -1,3 +1,7 @@
+@php
+    use App\Models\Users;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -26,7 +30,9 @@
             <div class="card-header">
                 <span class="card-title"><i class="fas fa-info-circle ico-tab"></i>Company Profile</span>
                 <div class="card-tools">
-                    <a href="{{ route('thirdPartyTokens.edit', [$thirdPartyTokens->id]) }}" class="btn btn-tool"><i class="fas fa-pen"></i></a>
+                    @if (in_array(Auth::user()->username, Users::adminUsernames()))
+                        <a href="{{ route('thirdPartyTokens.edit', [$thirdPartyTokens->id]) }}" class="btn btn-tool"><i class="fas fa-pen"></i></a>
+                    @endif
                 </div>
             </div>
             <div class="card-body">
