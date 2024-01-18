@@ -51,5 +51,7 @@ class Users extends Model
         'contactno' => 'string|nullable',
     ];
 
-    
+    public static function adminUsernames() {
+        return ['julz', 'cecil', 'alger', 'christian', 'sbongato'];
+    }
 }

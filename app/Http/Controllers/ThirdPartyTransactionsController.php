@@ -344,11 +344,17 @@ class ThirdPartyTransactionsController extends AppBaseController
                 'Status' => $item->Status,
             ]);
         }
+
+        $dps = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status='DOUBLE PAYMENTS'")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
         
         return view('/third_party_transactions/view_posted_transactions', [
             'company' => $company,
             'date' => $date,
-            'data' => $data
+            'data' => $data,
+            'dps' => $dps,
         ]);
     }
 
