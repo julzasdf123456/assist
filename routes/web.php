@@ -65,4 +65,7 @@ Route::get('/third_party_transactions/get-posted-calendar-data', [ThirdPartyTran
 Route::get('/third_party_transactions/get-graph-data', [ThirdPartyTransactionsController::class, 'getGraphData'])->name('thirdPartyTransactions.get-graph-data');
 Route::get('/third_party_transactions/get-graph-data-yearly', [ThirdPartyTransactionsController::class, 'getGraphDataYearly'])->name('thirdPartyTransactions.get-graph-data-yearly');
 Route::get('/third_party_transactions/get-company-calendar-activity', [ThirdPartyTransactionsController::class, 'getCompanyCalendarActivity'])->name('thirdPartyTransactions.get-company-calendar-activity');
+Route::get('/third_party_transactions/compare/{date}/{co}', [ThirdPartyTransactionsController::class, 'compare'])->name('thirdPartyTransactions.compare');
 Route::resource('thirdPartyTransactions', ThirdPartyTransactionsController::class);
+
+Route::resource('thirdPartyExcelReports', App\Http\Controllers\ThirdPartyExcelReportController::class);

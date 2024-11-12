@@ -599,4 +599,49 @@ class ThirdPartyTransactionsController extends AppBaseController
 
         return response()->json($data, 200);
     }
+
+    public function compare($date, $company) {
+        $transactions = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status IS NOT NULL")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [];
+        foreach($transactions as $item) {
+            $account = AccountMaster::find($item->AccountNumber);
+            // $paidBill = PaidBills::whereRaw("AccountNumber='" . $item->AccountNumber . "' AND ServicePeriodEnd='" . date('Y-m-d', strtotime($item->ServicePeriodEnd)) . "'")
+            // ->first();
+
+            array_push($data, [
+                'id' => $item->id,
+                'AccountNumber' => $item->AccountNumber,
+                'ServicePeriodEnd' => $item->ServicePeriodEnd,
+                'BillNumber' => $item->BillNumber,
+                'KwhUsed' => $item->KwhUsed,
+                'Amount' => $item->Amount,
+                'Surcharge' => $item->Surcharge,
+                'TotalAmount' => $item->TotalAmount,
+                'Teller' => $item->Teller,
+                'Company' => $item->Company,
+                'RefNo' => $item->ORNumber,
+                'created_at' => $item->created_at,
+                'ConsumerName' => $account != null ? $account->ConsumerName : '-',
+                // 'ORNumber' => $paidBill != null ? $paidBill->ORNumber : null,
+                // 'ORDate' => $paidBill != null ? $paidBill->ORDate : null,
+                'Status' => $item->Status,
+            ]);
+        }
+
+        $dps = ThirdPartyTransactions::whereRaw("Company='" . $company . "' AND TRY_CAST(created_at AS DATE)='" . $date . "' AND Status='DOUBLE PAYMENTS'")
+            ->select('*')
+            ->orderBy('created_at')
+            ->get();
+        
+        return view('/third_party_transactions/compare', [
+            'company' => $company,
+            'date' => $date,
+            'data' => $data,
+            'dps' => $dps,
+        ]);
+    }
 }

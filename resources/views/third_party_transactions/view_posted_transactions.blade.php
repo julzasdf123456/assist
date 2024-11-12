@@ -25,6 +25,7 @@
                     <div class="card-tools">
                         <a href="{{ route('thirdPartyTransactions.print-double-payments', [$date, $company]) }}" class="btn btn-warning btn-tool">Print Double Payments</a>
                         <a href="{{ route('thirdPartyTransactions.print-posted-payments', [$date, $company]) }}" class="btn btn-success btn-tool">Print Posted Payments</a>
+                        <a href="{{ route('thirdPartyTransactions.compare', [$date, $company]) }}" class="btn btn-primary btn-sm">Compare</a>
                     </div>
                 </div>
                 <div class="card-body table-responsive p-0">
