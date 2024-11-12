@@ -65,3 +65,4 @@ Route::group(['middleware' => 'auth:api'], function(){
  */
 Route::get('get-bill-by-account-and-period', [ThirdPartyAPI::class, 'getBillsByAccountAndPeriod']);
 Route::post('transact', [ThirdPartyAPI::class, 'transact']);
+Route::post('cancel-transaction', [ThirdPartyAPI::class, 'cancelTransaction']);

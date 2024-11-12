@@ -407,6 +407,7 @@ class ThirdPartyAPI extends Controller {
 
                                 $checkThirdPartyTransactions = ThirdPartyTransactions::where('ServicePeriodEnd', $period)
                                     ->where('AccountNumber', $accountNo)
+                                    ->whereRaw("Status NOT IN ('CANCELLED')")
                                     ->first();
 
                                 if ($checkPaidBills == null && $checkThirdPartyTransactions == null) {
@@ -461,6 +462,44 @@ class ThirdPartyAPI extends Controller {
                 } else {
                     return response()->json('Account number not supplied!', $this->badRequest);
                 }                
+            } else {
+                return response()->json('Token not found!', $this->unauthorized);
+            }
+        } else {
+            return response()->json('No token provided!', $this->badRequest);
+        }
+    }
+
+    public function cancelTransaction(Request $request) {
+        $token = $request['_token'];
+        $accountNo = $request['acct_no'];
+        $ornumber = $request['ornumber'];
+
+        if ($token != null) {
+            $tokenData = ThirdPartyTokens::where('Token', $token)->first();
+
+            // IF TOKEN IS NOT FOUND IN THE SYSTEM
+            if ($tokenData != null) {
+                $transaction = ThirdPartyTransactions::where('ORNumber', $ornumber)
+                    ->where('AccountNumber', $accountNo)
+                    ->first();
+
+                if ($transaction != null) {
+                    if (str_contains($transaction->Status, "POSTED")) {
+                        return response()->json('This transaction is already been accounted by the system. Cancellation is already unavailable!', $this->unauthorized);
+                    } else {
+                        if ($transaction->Status == null | $transaction->Status !== 'CANCELLED') {
+                            $transaction->Status = 'CANCELLED';
+                            $transaction->save();
+    
+                            return response()->json($transaction, $this->success);
+                        } else {
+                            return response()->json('Transasction has already ben cancelled!', $this->badRequest);
+                        }
+                    }
+                } else {
+                    return response()->json('Transaction Not Found!', $this->notFound);
+                } 
             } else {
                 return response()->json('Token not found!', $this->unauthorized);
             }
