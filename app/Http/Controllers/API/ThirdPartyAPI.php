@@ -494,7 +494,7 @@ class ThirdPartyAPI extends Controller {
     
                             return response()->json($transaction, $this->success);
                         } else {
-                            return response()->json('Transasction has already ben cancelled!', $this->badRequest);
+                            return response()->json('Transaction has already been cancelled!', $this->badRequest);
                         }
                     }
                 } else {
