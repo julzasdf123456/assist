@@ -113,6 +113,7 @@
                             Company : "{{ $company }}"
                         },
                         success : function(res) {
+                            console.log(res)
                             Toast.fire({
                                 icon : 'success',
                                 text : 'Payments posted!'
@@ -120,6 +121,7 @@
                             window.location.href = "{{ url('/third_party_transactions/view-posted-transactions') }}" + "/{{ $date }}/{{ $company }}"
                         },
                         error : function(err) {
+                            console.log(err)
                             Toast.fire({
                                 icon : 'error',
                                 text : 'Error posting payments!'

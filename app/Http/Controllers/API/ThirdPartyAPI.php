@@ -437,6 +437,10 @@ class ThirdPartyAPI extends Controller {
                                             $transaction->ORNumber = $ornumber;
                                             $transaction->save();
 
+                                            if ($company === 'palawan') {
+                                                $transaction->Status = 'POSTED';
+                                            }
+
                                             return response()->json($transaction, $this->success);
                                         }
                                     } else {

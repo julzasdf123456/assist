@@ -213,6 +213,7 @@ class ThirdPartyTransactionsController extends AppBaseController
     }
 
     public function postTransactions(Request $request) {
+        set_time_limit(900);
         $date = $request['Date'];
         $company = $request['Company'];
 
@@ -230,6 +231,10 @@ class ThirdPartyTransactionsController extends AppBaseController
             $bill = Bills::where('AccountNumber', $item->AccountNumber)
                 ->where('ServicePeriodEnd', $item->ServicePeriodEnd)
                 ->first();
+
+            // array_push($data, [
+            //     'AccountNumber' => $item->AccountNumber,
+            // ]);
 
             if ($paidBill != null) {
                 // SKIP DOUBLE PAYMENTS
@@ -269,11 +274,12 @@ class ThirdPartyTransactionsController extends AppBaseController
                     $item->save();
                 } else {
                     // BILL NOT FOUND
+                   
                 }               
             }
         }
 
-        return response('ok', 200);
+        return response()->json($transactions, 200);
     }
 
     public function markAsPosted(Request $request) {
